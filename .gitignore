@@ -1,0 +1,19 @@
+# ALLOW-LIST. Everything is ignored unless listed below.
+#
+# Why an allow-list and not a block-list: this folder also holds files built
+# from the LICENSED Signal Four crash records (Excel exports, HTML maps and
+# JSON with crash points), text copied from third-party project documents, and
+# large downloads. A block-list only protects against files someone remembered
+# to name. An allow-list means a new data file can never be committed by accident.
+
+*
+!*/
+
+# code and documents only
+!*.py
+!*.md
+!.gitignore
+
+# never commit caches
+__pycache__/
+.pytest_cache/
