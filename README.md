@@ -24,6 +24,8 @@ treats cycling as free while it is very dangerous per mile here.
 | every choice and assumption | [`ASSUMPTIONS_AND_CHOICES.md`](ASSUMPTIONS_AND_CHOICES.md) |
 | how it runs, and how it compares with standard MEP | [`HOW_IT_RUNS_VS_STANDARD_MEP.md`](HOW_IT_RUNS_VS_STANDARD_MEP.md) |
 | every correction made | [`CORRECTIONS.md`](CORRECTIONS.md) |
+| **every concept, taught from zero** | [`LEARN.md`](LEARN.md) |
+| ideas, decisions, rules, timeline, to-do — the project's memory | [`notes/`](notes/README.md) |
 | the technical report | [`REPORT.md`](REPORT.md) |
 
 ---

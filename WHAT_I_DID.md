@@ -914,7 +914,7 @@ broke — the project just quietly used old data.
 
 ## Not done — easy basics
 
-1. **Nothing is saved in git** (no history, no backup). *Needs your OK.*
+1. ~~Nothing is saved in git~~ — **done 14 September**: private repo `github.com/yrasool/i4-safety`, code and documents only.
 2. **No charts or maps** anywhere.
 3. **The presentation is a text outline**, not slides.
 4. **The resume line isn't written.**
