@@ -25,6 +25,7 @@ treats cycling as free while it is very dangerous per mile here.
 | how it runs, and how it compares with standard MEP | [`HOW_IT_RUNS_VS_STANDARD_MEP.md`](HOW_IT_RUNS_VS_STANDARD_MEP.md) |
 | every correction made | [`CORRECTIONS.md`](CORRECTIONS.md) |
 | **every concept, taught from zero** | [`LEARN.md`](LEARN.md) |
+| **a 51-lesson study plan** — what, why, how, mistakes and results | [`STUDY_PLAN.md`](STUDY_PLAN.md) |
 | ideas, decisions, rules, timeline, to-do — the project's memory | [`notes/`](notes/README.md) |
 | the technical report | [`REPORT.md`](REPORT.md) |
 

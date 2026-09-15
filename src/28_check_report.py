@@ -308,7 +308,7 @@ def main():
               # Added 2026-09-14: the four explainer files. Same rule - if a
               # file raises a subject, its number must match the data.
               "MATH.md", "DATA.md", "ASSUMPTIONS_AND_CHOICES.md",
-              "HOW_IT_RUNS_VS_STANDARD_MEP.md", "MEP.md", "CORRECTIONS.md", "LEARN.md"]
+              "HOW_IT_RUNS_VS_STANDARD_MEP.md", "MEP.md", "CORRECTIONS.md", "LEARN.md", "STUDY_PLAN.md"]
     print(f"\n  the documents that go in the room "
           f"(conditional: anchor present => value must match)")
     for name in SPOKEN:
