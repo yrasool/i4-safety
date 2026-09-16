@@ -275,7 +275,7 @@ words, then Claude corrects and moves on. Tick the box when a lesson makes sense
 - **Why:** count each place once; people-heavy places count more.
 - **How:** band differences (100, 250 → 150 newly reached).
 - **Mistake / lesson:** the headline first used a **plain average**; MEP's rule is **population-weighted**.
-- **Result:** 7,567 → 5,863, a 22.5% drop.
+- **Result:** 7,567 → 5,796, a 23.4% drop.
 - **You should be able to answer:** Why count a place only once? Why weight by population?
 
 ---
@@ -322,13 +322,13 @@ words, then Claude corrects and moves on. Tick the box when a lesson makes sense
 - **Result:** AIC 10,765 → 10,694; b from 0.628 (collectors) to 0.828 (freeways).
 - **You should be able to answer:** What does a standard error tell you? What does AIC compare?
 
-### ☐ Lesson 32. Neighbourhood driving danger, and the 1.3%
+### ☐ Lesson 32. Neighbourhood driving danger: 1.3%, then 7.0% with real routes
 - **What:** a weighted average of nearby roads' danger, by traffic and closeness.
 - **Why:** gives each neighbourhood its own car crash cost.
 - **How:** weight = traffic × e^(−0.08 × minutes).
-- **Mistake / lesson:** it only explains **1.3%** of the map; 77% of that is just which county. **Not a crash-danger map.**
+- **Mistake / lesson:** the nearby-roads version explained **1.3%** of the map, 77% of it just county. Following each trip's real route (step 40) raised it to **7.0%**, mostly within counties.
 - **Result:** $0.08 to $0.40 a mile; Hernando $0.17, Hillsborough $0.09.
-- **You should be able to answer:** Why is 1.3% an honest but small result?
+- **You should be able to answer:** Why did following real routes raise 1.3% to 7.0%?
 
 ### ☐ Lesson 33. Walking and biking danger by place — a negative result
 - **What:** tried to make walking and biking danger vary by neighbourhood.
@@ -344,11 +344,11 @@ words, then Claude corrects and moves on. Tick the box when a lesson makes sense
 # Unit 7 — The results
 
 ### ☐ Lesson 34. The headline, counties and neighbourhoods
-- **What:** 22.5% drop; counties 17.3% (Pasco) to 28.9% (Citrus); best neighbourhood −43%.
+- **What:** 23.4% drop; counties 19.1% (Pasco) to 29.0% (Citrus); best neighbourhood −43%.
 - **Why:** the main finding.
 - **How:** population-weighted; compare percentages only.
 - **Mistake / lesson:** raw scores can't be compared with other cities (NREL: 11,983 vs 122.35 for one region).
-- **Result:** rankings barely change (0.991).
+- **Result:** rankings barely change (0.989).
 - **You should be able to answer:** Why does Pasco drop least?
 
 ### ☐ Lesson 35. Why the drop is mostly cycling
@@ -356,13 +356,13 @@ words, then Claude corrects and moves on. Tick the box when a lesson makes sense
 - **Why:** MEP treats biking as free; its crash cost is ~$10 a mile.
 - **How:** the 100-point neighbourhood example.
 - **Mistake / lesson:** the result is mostly cycling being **switched off**, not a smooth penalty.
-- **Result:** bike 79.5%, car 15.4%, walk 5.1% of the drop.
+- **Result:** bike 76.8%, car 18.2%, walk 5.0% of the drop.
 - **You should be able to answer:** Explain the 100-point example.
 
 ### ☐ Lesson 36. Who is hit hardest
-- **What:** neighbourhoods with more carless households lose more (20.4% → 24.9%).
+- **What:** neighbourhoods with more carless households lose more (21.2% → 26.2%).
 - **Why:** people with fewer choices depend on the modes MEP overstates.
-- **How:** five groups; rank correlation +0.26.
+- **How:** five groups; rank correlation +0.27.
 - **Mistake / lesson:** the table once said "steadily rising" when it wasn't; and **correlation isn't causation**.
 - **Result:** a moderate link.
 - **You should be able to answer:** What else could explain the link?
@@ -502,6 +502,6 @@ words, then Claude corrects and moves on. Tick the box when a lesson makes sense
 - **What:** a 20-minute presentation and ~40 minutes of questions from people who built MEP.
 - **Why:** the goal of the whole project.
 - **How:** `PRESENTATION.md`, `INTERVIEW_QA.md`, practice grilling in the chat.
-- **Mistake / lesson:** say the weak points first: cycling "switched off", potential vs real travel, 1.3% local, who pays.
+- **Mistake / lesson:** say the weak points first: cycling "switched off", potential vs real travel, 7.0% local, who pays.
 - **Result:** ready once you can answer every lesson's questions out loud.
 - **You should be able to answer:** Give the 30-second answer to "Is this really MEP?"

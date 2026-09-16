@@ -89,6 +89,7 @@ CSV, reports), in the read-only `Yusra` folder.
 - Wrote the **presentation outline**.
 - Tried walking/biking danger by place (didn't work); road types (worked).
 - **Deleted the delay term** → headline **22.5%**.
+- **16 Sep: driving danger follows real routes** (step 40) → headline **23.4%**; local danger 1.3% → 7.0% of the map.
 - Traffic-by-year check; **who pays** when a car hits someone (93% → 99.0%).
 - Checker now reads the spoken documents; motorbikes and the national bus rate disclosed.
 - Found **three steps missing** from the run list; fixed; added the stale-file list.

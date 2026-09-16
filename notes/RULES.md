@@ -25,7 +25,7 @@ follow them. Each has the reason and where it came from.
 | **Every step that reads a file must come after the step that writes it** in `run_all.py` | Steps 05, 33 and 01 were missing; old files were used silently | 9–10 Sep |
 | **Run `python src/28_check_report.py` and `python -m pytest tests -q` before quoting anything** | Catches numbers that don't match the data | 8 Sep onward |
 | **Compare percentages and rankings only**, never raw MEP scores with other cities | The raw score depends on how places are counted | 9 Sep |
-| **Never call the neighbourhood map a crash-danger map** | Only 1.3% comes from local danger | 9 Sep |
+| **Never call the neighbourhood map a crash-danger map** | Only 7.0% comes from local danger (1.3% before routing) | 9 Sep, updated 16 Sep |
 | **Say a result's weak point before anyone else does** | Interviewers trust honesty about limits | throughout |
 | **Measure locally where data exists** — don't use a national average when a Florida figure is available | You: "you have so much data" | 7 Sep |
 

@@ -170,6 +170,25 @@ def main():
         if sum(1 for v in vals if v) >= 0.95 * n:
             r_local = np.array([float(v) if v else r_drive for v in vals])
 
+    # ROUTE-ASSIGNED drive risk (step 40) is what step 23 ships when present.
+    # It differs by 10-minute band, so the place-varying case below has to be
+    # built band by band rather than with one rate per origin - otherwise this
+    # test would validate a surface step 23 no longer produces.
+    route_bands = None
+    p_route = FINAL / "route_risk_by_origin.csv"
+    if p_route.exists() and r_local is not None:
+        with p_route.open(encoding="utf8") as fh:
+            rb = {r["GEOID20"]: r for r in csv.DictReader(fh)}
+        route_bands = np.zeros((len(BANDS), n))
+        for bi, b in enumerate(BANDS):
+            for k, g_ in enumerate(geoid):
+                v = rb.get(g_, {}).get(f"r_band{b}", "")
+                route_bands[bi, k] = float(v) if v else r_local[k]
+        ov = [rb.get(g_, {}).get("r_route", "") for g_ in geoid]
+        r_local = np.array([float(v) if v else r_local[k]
+                            for k, v in enumerate(ov)])
+        print("  place-varying case uses ROUTE-ASSIGNED risk by band (step 40)")
+
     g = {m: np.exp(GAMMA * real.get(m, 0.0)) for m in MODES}
     B = {}
     for m in MODES:
@@ -220,6 +239,17 @@ def main():
         real_local = dict(real)
         gl = {m: np.exp(GAMMA * real_local.get(m, 0.0)) for m in MODES}
         gl["drive"] = np.exp(GAMMA * r_local)        # a VECTOR, not a scalar
+        if route_bands is not None:
+            # effective keep factor = harm-weighted over bands, exactly as
+            # step 23 charges it: each band at its own route-assigned rate
+            e, c = E_C["drive"]
+            dh = np.zeros(n)
+            for bi, b in enumerate(BANDS):
+                band = o["drive"][bi] - (o["drive"][bi - 1] if bi else 0.0)
+                dh += (band * np.exp(ALPHA * e + BETA * b + GAMMA * c)
+                       * np.exp(GAMMA * route_bands[bi]))
+            gl["drive"] = np.divide(dh, B["drive"], out=np.ones(n),
+                                    where=B["drive"] > 0)
         harm_l = sum(gl[m] * B[m] for m in MODES)
         loss_l = np.zeros(n)
         loss_l[live] = 1.0 - harm_l[live] / tot[live]

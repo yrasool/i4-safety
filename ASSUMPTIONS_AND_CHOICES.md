@@ -387,8 +387,8 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
 
 ### H1. Weight neighbourhoods by population
 - **The choice:** MEP's rule — more people, more weight.
-- **Tested?** **Yes** — three ways compared: population-weighted **22.5%**, plain average **23.8%**, average of each
-  neighbourhood's own drop weighted by people **20.6%**.
+- **Tested?** **Yes** — three ways compared: population-weighted **23.4%**, plain average **24.7%**, average of each
+  neighbourhood's own drop weighted by people **21.7%**.
 
 ### H2. Report percentages and rankings, never raw scores against other cities
 - **Why:** the raw score depends on how places are counted (NREL: 11,983 vs 122.35 for one region).
@@ -403,14 +403,14 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
   |---:|---:|
   | $0.96 (a tenth) | 12.2% |
   | $4.80 (half) | 22.3% |
-  | **$9.59 (ours)** | **23.8%** |
+  | **$9.59 (ours)** | **24.7%** |
   | $95.93 (ten times) | 24.0% |
 
   With **both** walking and biking at a tenth, the drop is **11.5%**.
 
 ### H5. "Not a crash-danger map"
 - **The choice:** never present the neighbourhood map as showing where crashes are worst.
-- **Why:** only **1.3%** of the differences between neighbourhoods come from local danger.
+- **Why:** only **7.0%** of the differences between neighbourhoods come from local danger (1.3% before driving danger was routed; see K1).
 - **Tested?** **Yes** — measured.
 
 ---
@@ -432,8 +432,8 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
 | walking and biking danger by place (F7) | too weak to use |
 | MEP's settings (G1) | passes NREL's tests |
 | traffic-jam minutes (G5) | 24.9% with, 22.5% without |
-| combining neighbourhoods (H1) | 20.6–23.8% depending on method |
-| **trip shares, four sources (D4)** | **settled: 20.3% / 27.0% / 27.2% / 30% work share all give 22.4-22.6%** |
+| combining neighbourhoods (H1) | 21.7–24.7% depending on method |
+| **trip shares, four sources (D4)** | **settled: 20.3% / 27.0% / 27.2% / 30% work share all give 23.3-23.4%** |
 
 ### Not tested — the open questions
 
@@ -481,10 +481,10 @@ The Tampa survey also gives shopping 35.1% against our 28.1%, social 16.3% again
 
 | trip shares used | MEP drop |
 |---|---:|
-| ours, NHTS South Atlantic | -22.5% |
-| Tampa Bay Regional Travel Survey | -22.4% |
-| FDOT South Florida defaults | -22.4% |
-| a deliberately low 15% work share | -22.6% |
+| ours, NHTS South Atlantic | -23.4% |
+| Tampa Bay Regional Travel Survey | -23.3% |
+| FDOT South Florida defaults | -23.3% |
+| a deliberately low 15% work share | -23.4% |
 
 **Why.** The drop is set by how dangerous each mode is per mile, not by which destinations people
 are heading to. Changing the destination mix rescales every mode's opportunities together, so the
@@ -531,3 +531,68 @@ describes Tampa Bay's ridership rather than buses in general.
 body-typed bus gave $0.1532 - three times a car - because the numerator held charter coaches,
 hotel shuttles and tour buses while the denominator was HART and PSTA passenger-miles only. A
 denominator that does not cover its own numerator. See CORRECTIONS.md #63.
+
+
+---
+
+## K. Added 16 September 2026 — driving danger follows the real route
+
+### K1. What changed, and what did not
+
+**The change.** Driving danger for each neighbourhood used to be the traffic-weighted average of
+state roads **near** it (step 30). It is now the danger summed **along the actual shortest route**
+from that neighbourhood to every place it can reach within 40 minutes, averaged over each
+10-minute band by that band's opportunities (step 40). 2,820,703 routes.
+
+**Why.** A neighbourhood on a quiet street whose every trip runs down one deadly arterial got the
+quiet street's number. Proximity cannot see which roads a trip uses; routing can.
+
+**What it did to the results.**
+
+| | nearby roads (old) | real routes (now) |
+|---|---:|---:|
+| headline drop | 22.5% | **23.4%** |
+| share of the map explained by local danger | 1.3% | **7.0%** |
+| of that, just "which county" | 77% | **23%** |
+| cycling's share of the drop | 79.5% | **76.8%** |
+| driving's share of the drop | 15.4% | **18.2%** |
+| carless-household gradient | 20.4% → 24.9%, bottom two tied | **21.2% → 26.2%, rising at every step** |
+| trip-share test (four sources) | 22.4–22.6% | **23.3–23.4%** |
+
+**A new finding it produced.** Danger per mile falls with trip length: **$0.133** in the 10-minute
+band against **$0.097** at 40 minutes. Short trips run on local arterials — crossings, driveways,
+people walking — and long trips reach freeways, which are the safest roads per mile.
+
+### K2. Three questions about what this touches
+
+**Does it change the census block groups?** **No.** Still the same 2,170 block groups, the same
+places, the same people, the same opportunities. Only the driving crash cost attached to each one
+changed.
+
+**Does it change the crash cost per passenger-mile?** **The regional number, no; how it is shared
+out, yes.** Total harm divided by total miles is still **$0.1059** — same deaths, same injuries,
+same miles. What changed is which trips carry more of it. Because the route average covers
+**state-system miles only** and destinations cluster on busy arterials, routed values run higher
+than the regional figure: per-neighbourhood median **$0.1185**. That is most of why the headline
+moved from 22.5% to 23.4%, and it is the thing to say if asked: *routing does not add harm, it
+charges trips for the roads they actually use, and the roads people drive to reach things are
+riskier than the average mile.*
+
+The honest caveat: local streets have no measured rate (FDOT publishes traffic counts only for state
+roads) so they are left out of each route's average rather than guessed. State roads are 8.5% of
+network miles but **76%** of route miles, and only **0.1%** of routes had none and fell back to the
+regional rate.
+
+**Does it change the Empirical Bayes method?** **No — routing depends on it.** A common
+misreading is worth correcting here: Empirical Bayes does **not** keep only the risky roads. It
+keeps **every** road and corrects each one for luck — a quiet road with one unlucky crash is pulled
+toward what a road like it normally sees, and a road with years of real crashes keeps most of its
+own history. Those corrected per-road rates are exactly what the routes add up. Without Empirical
+Bayes, every route that crossed a lucky or unlucky segment would inherit its noise, and 13 of the
+25 "worst" roads by raw rate were luck.
+
+### K3. How to reproduce the old number
+
+`MEP_DRIVE_RISK=proximity python src/23_mep.py` gives the step-30 surface (22.5%) and
+`MEP_DRIVE_RISK=scalar python src/23_mep.py` the one-regional-number surface (22.9%). Both are
+no-write scenario runs.

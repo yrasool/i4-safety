@@ -464,7 +464,7 @@ should count 4 times as much as one with 500. This is MEP's own rule.
 **The drop:**
 > **drop = 1 − (score with crash cost ÷ normal score)**
 
-Real region: 1 − (5,863 ÷ 7,567) = 1 − 0.775 = **22.5%**
+Real region: 1 − (5,796 ÷ 7,567) = 1 − 0.766 = **23.4%**
 
 ---
 
@@ -483,7 +483,7 @@ Real region: 1 − (5,863 ÷ 7,567) = 1 − 0.775 = **22.5%**
 | bus | 1 | 0.9995 | 1.0 | 0.0 |
 | **total** | **100** | | **77.0** | **23.0** |
 
-Bike's share = 17.85 ÷ 23.0 = **78%**. (Real region: **79.5%**.)
+Bike's share = 17.85 ÷ 23.0 = **78%**. (Real region: **76.8%**.)
 
 **Why the shares add up to exactly 100%:** each mode's crash cost only changes **that mode's** points.
 So the total loss is just the four losses added together, with nothing left over.
@@ -517,7 +517,7 @@ only shows **how people travel**, not where it's dangerous.
 exactly.
 
 **How it was (partly) broken:** giving each neighbourhood its **own** car crash cost (part 14). Then
-"1 − keep" for the car differs by place. Measured afterwards, local danger explains **1.3%** of the
+"1 − keep" for the car differs by place. Measured afterwards, local danger explains **7.0%** of the
 differences between neighbourhoods; mode mix explains **98.7%**.
 
 ---
@@ -780,11 +780,11 @@ Sort all neighbourhoods by their share of households **without a car**, and cut 
 
 | households without a car | drop |
 |---|---:|
-| fewest | 20.4% |
+| fewest | 21.2% |
 | second | 20.3% |
 | middle | 21.0% |
 | fourth | 23.1% |
-| most | 24.9% |
+| most | 26.2% |
 
 ### Rank correlation (Spearman)
 **What it's for:** a single number for "do these two things go up together?"
@@ -800,7 +800,7 @@ Sort all neighbourhoods by their share of households **without a car**, and cut 
 | 0 | no link |
 | −1 | exactly opposite |
 
-**Ours: +0.26** — a real but moderate link: more carless → bigger drop, with many exceptions.
+**Ours: +0.27** — a real but moderate link: more carless → bigger drop, with many exceptions.
 
 **Correlation is not cause:** carless neighbourhoods are also denser and more walkable, which on its own
 could explain a bigger drop.
@@ -809,7 +809,7 @@ could explain a bigger drop.
 
 ## 20. How much the ranking changes
 
-**Rank correlation (Spearman) between the ranking before and after:** **0.991** — almost identical order.
+**Rank correlation (Spearman) between the ranking before and after:** **0.989** — almost identical order.
 
 **Median rank move:** for each neighbourhood, how many places it moved; then take the middle value:
 > **34 places** out of 2,170.
@@ -829,11 +829,11 @@ could explain a bigger drop.
 |---:|---:|
 | $0.96 (a tenth) | 12.2% |
 | $4.80 (half) | 22.3% |
-| **$9.59 (ours)** | **23.8%** |
+| **$9.59 (ours)** | **24.7%** |
 | $95.93 (ten times) | 24.0% |
 
 **What it shows:**
-- **Halving** the bike number barely changes the drop (23.8% → 22.3%).
+- **Halving** the bike number barely changes the drop (24.7% → 23.1%).
 - **Ten times higher** barely changes it (→ 24.0%).
 - Only a **tenth** makes a real difference (→ 12.2%).
 

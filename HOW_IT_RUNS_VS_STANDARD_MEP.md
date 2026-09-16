@@ -268,7 +268,7 @@ it — and it passes them.
 
 ## You CAN compare
 
-- **Percentages** — "crash cost removes 22.5%" doesn't depend on how places are counted.
+- **Percentages** — "crash cost removes 23.4%" doesn't depend on how places are counted.
 - **Rankings** — which neighbourhoods score higher or lower.
 - **Behaviour** — our version passes NREL's own tests: better fuel economy → score up (+27.6%); faster driving
   → up; higher driving cost → down (−30.1%); no change → same score.

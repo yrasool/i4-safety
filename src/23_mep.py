@@ -299,11 +299,19 @@ def main():
         override = override or "scalar"
         print("\n  *** SENSITIVITY RUN: ONE regional drive rate. NOTHING WILL "
               "BE WRITTEN. ***")
-    if os.environ.get("MEP_DRIVE_RISK") == "route":
-        rpath = FINAL / "route_risk_by_origin.csv"
-        if not rpath.exists():
-            sys.exit("FAIL: MEP_DRIVE_RISK=route but route_risk_by_origin.csv "
-                     "is missing. Run step 40 first.")
+    # SHIPPED DEFAULT since 2026-09-16: route-assigned risk whenever step 40
+    # has run. MEP_DRIVE_RISK=proximity reproduces the step 30 surface and
+    # MEP_DRIVE_RISK=scalar the one-number surface, both as no-write scenarios.
+    mode_env = os.environ.get("MEP_DRIVE_RISK", "")
+    if mode_env == "proximity":
+        override = override or "proximity"
+        print("\n  *** SENSITIVITY RUN: step 30 PROXIMITY drive risk. NOTHING "
+              "WILL BE WRITTEN. ***")
+    rpath = FINAL / "route_risk_by_origin.csv"
+    if mode_env == "route" and not rpath.exists():
+        sys.exit("FAIL: MEP_DRIVE_RISK=route but route_risk_by_origin.csv "
+                 "is missing. Run step 40 first.")
+    if mode_env not in ("proximity", "scalar") and rpath.exists():
         with rpath.open(encoding="utf8") as fh:
             rb = {r["GEOID20"]: r for r in csv.DictReader(fh)}
         fallback = r_drive_i if r_drive_i is not None else np.full(n, r_drive)
@@ -320,11 +328,9 @@ def main():
                     # origin's own estimate rather than an arbitrary zero
                     route_bands[bi, k] = fallback[k]
                     empty += 1
-        override = override or "route"
-        print(f"\n  *** SENSITIVITY RUN: ROUTE-ASSIGNED drive risk by band "
-              f"(step 40). {empty:,} of {len(BANDS) * n:,} origin-bands had no "
-              f"destination and use the origin estimate. NOTHING WILL BE "
-              f"WRITTEN. ***")
+        print(f"\n  ROUTE-ASSIGNED drive risk by band (step 40), shipped. "
+              f"{empty:,} of {len(BANDS) * n:,} origin-bands had no destination "
+              f"and use the origin estimate.")
         for bi, b in enumerate(BANDS):
             print(f"    {b:>2}-min band   median ${np.median(route_bands[bi]):.4f}"
                   f"   p10 ${np.percentile(route_bands[bi], 10):.4f}"

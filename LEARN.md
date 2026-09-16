@@ -34,7 +34,7 @@ Read it top to bottom. Each part builds on the ones before. At the end there's a
 understand their work is to rebuild it yourself, find a real gap, and fill it carefully.
 
 **How:** calculate MEP for Tampa Bay from public data, work out how much crashes cost per mile for each way
-of travelling, add that cost into MEP, and see how much the score changes. **Answer: it drops 22.5%.**
+of travelling, add that cost into MEP, and see how much the score changes. **Answer: it drops 23.4%.**
 
 **Who:** you, with Claude building and explaining, and independent checking programs reviewing the work.
 
@@ -279,7 +279,7 @@ of travelling, add that cost into MEP, and see how much the score changes. **Ans
 ### Correlation and rank correlation (Spearman)
 - **What:** a number from −1 to +1 saying whether two things go up together.
 - **Spearman** compares **rankings**, so it's not fooled by extreme values.
-- **Here:** carless households vs MEP drop: **+0.26** (moderate). Before vs after rankings: **0.991** (almost identical).
+- **Here:** carless households vs MEP drop: **+0.27** (moderate). Before vs after rankings: **0.989** (almost identical).
 
 ### Correlation is not causation
 - **What:** two things going together doesn't mean one causes the other.
@@ -464,7 +464,7 @@ Cover the answers and try each one.
 > The raw score depends on how places are counted. NREL got 11,983 and 122.35 for the same region.
 
 **11. Why is the neighbourhood map not a crash-danger map?**
-> Only 1.3% of the differences come from local danger; the rest is which modes people use.
+> Only 7.0% of the differences come from local danger (1.3% before routes were followed); the rest is which modes people use.
 
 **12. Why does MEP give cycling so much weight in Tampa Bay, even though few people bike?**
 > MEP counts where you **could** go by bike, not whether anyone does.
