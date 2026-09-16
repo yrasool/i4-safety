@@ -65,6 +65,12 @@ STEPS = [
     ("33_spf_stratified.py", 3, True, False),
     ("29_spf_eb.py", 1, False, False),
     ("30_route_risk.py", 2, False, False),
+    # 40 is the route assignment step 30's own docstring said it was not.
+    # Shortest-time tree per origin, risk summed along the path to every
+    # destination by pointer jumping. It needs the network on the first run to
+    # cache FDOT polylines, and about 16 minutes. Its output is read by step 23
+    # only under MEP_DRIVE_RISK=route until the switch is decided.
+    ("40_route_assignment.py", 17, True, True),
     # 32 reads 29's segment_eb.csv, so it must follow it. It produces a
     # NEGATIVE result - non-motorist risk could not be made to vary by place -
     # and it is in the pipeline precisely so that negative result stays true

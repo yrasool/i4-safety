@@ -283,6 +283,53 @@ def main():
             print(f"\n  origin_risk.csv covers only "
                   f"{sum(1 for v in vals if v):,} of {n:,} origins - "
                   f"too few, using the regional scalar")
+    # ROUTE-ASSIGNED DRIVE RISK, opt-in: MEP_DRIVE_RISK=route.
+    # Step 40 sums segment risk along the shortest route to every destination
+    # and averages it over the opportunities in EACH 10-minute band. That lets
+    # the drive cost differ by band: a 10-minute trip on local streets and a
+    # 40-minute trip down a deadly arterial are no longer charged one number.
+    # It replaces step 30's proximity estimate for drive only. Opt-in and
+    # no-write until it has been compared, because it changes the one input
+    # in the model that varies by place.
+    route_bands = None
+    if os.environ.get("MEP_DRIVE_RISK") == "scalar":
+        # the one-regional-number version, kept as the reference that step
+        # 26 proves is an identity in mode mix
+        r_drive_i = None
+        override = override or "scalar"
+        print("\n  *** SENSITIVITY RUN: ONE regional drive rate. NOTHING WILL "
+              "BE WRITTEN. ***")
+    if os.environ.get("MEP_DRIVE_RISK") == "route":
+        rpath = FINAL / "route_risk_by_origin.csv"
+        if not rpath.exists():
+            sys.exit("FAIL: MEP_DRIVE_RISK=route but route_risk_by_origin.csv "
+                     "is missing. Run step 40 first.")
+        with rpath.open(encoding="utf8") as fh:
+            rb = {r["GEOID20"]: r for r in csv.DictReader(fh)}
+        fallback = r_drive_i if r_drive_i is not None else np.full(n, r_drive)
+        route_bands = np.zeros((len(BANDS), n))
+        empty = 0
+        for bi, b in enumerate(BANDS):
+            for k, g in enumerate(geoid):
+                v = rb.get(g, {}).get(f"r_band{b}", "")
+                if v:
+                    route_bands[bi, k] = float(v)
+                else:
+                    # no destination in this band: the band carries no
+                    # opportunities, so the value is never weighted; use the
+                    # origin's own estimate rather than an arbitrary zero
+                    route_bands[bi, k] = fallback[k]
+                    empty += 1
+        override = override or "route"
+        print(f"\n  *** SENSITIVITY RUN: ROUTE-ASSIGNED drive risk by band "
+              f"(step 40). {empty:,} of {len(BANDS) * n:,} origin-bands had no "
+              f"destination and use the origin estimate. NOTHING WILL BE "
+              f"WRITTEN. ***")
+        for bi, b in enumerate(BANDS):
+            print(f"    {b:>2}-min band   median ${np.median(route_bands[bi]):.4f}"
+                  f"   p10 ${np.percentile(route_bands[bi], 10):.4f}"
+                  f"   p90 ${np.percentile(route_bands[bi], 90):.4f}")
+
     print(f"\n  CRASH COST PER PASSENGER-MILE, all read, none declared")
     print(f"    drive    ${r_drive:>7.4f}    KSI, step 04")
     print(f"    transit  ${R_TRANSIT:>7.4f}    FATALITY-ONLY, step 05 "
@@ -308,7 +355,9 @@ def main():
                 prev = o[m][bi - 1] if bi else 0.0
                 band = o[m][bi] - prev              # Eq 3 band DIFFERENCE
                 t = b + (d_drive if m in ("drive", "transit") else 0.0)
-                M = ALPHA * e + BETA * t + GAMMA * (c + r)
+                rb_ = (route_bands[bi] if (inject_crash and m == "drive"
+                                           and route_bands is not None) else r)
+                M = ALPHA * e + BETA * t + GAMMA * (c + rb_)
                 total += band * np.exp(M)
         return total
 
@@ -379,6 +428,14 @@ def main():
               f"{lo[m].mean()/base[m].mean()-1:>+9.1%}")
 
     if override:
+        dump = os.environ.get("MEP_DUMP")
+        if dump:
+            # per-origin arrays for comparing scenarios, written ONLY to the
+            # path given - never into data/, so the report cannot read them
+            np.savez(dump, base=base, lo=lo, geoid=np.array(geoid),
+                     county=np.array(county),
+                     pop=pop if pop is not None else np.zeros(n))
+            print(f"\n  scenario arrays dumped to {dump}")
         print("\nSENSITIVITY RUN - mep_by_blockgroup.csv NOT written, so the "
               "real result in data/final/ is untouched.")
         return
