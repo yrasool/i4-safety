@@ -75,6 +75,13 @@ CHUNK = 64
 MAX_SNAP_M = 2_000
 CONNECTOR_M = 250.0     # about one suburban block
 CONNECTOR_SLOW = 3.0    # time multiplier on those short stretches
+# FLORIDA STATUTORY DEFAULTS for roads with no posted speed in OSM.
+# s.316.183 F.S.: 30 mph in business or residence districts, 55 mph
+# elsewhere. Local streets carry no speed tag on 84-100% of their miles in
+# every county here, so the old blanket 25 mph called rural roads safe.
+# 'Elsewhere' is read as a block group below URBAN_PER_SQMI people.
+URBAN_MPH, RURAL_MPH = 30.0, 55.0
+URBAN_PER_SQMI = 1_000.0
 BIKE_MPH = s20.BIKE_MPH
 MPS = s20.MPS
 
@@ -199,6 +206,22 @@ def main():
                  "tiles changed since step 20 ran; rerun 20 and 21 first, or "
                  "every travel-time index will point at the wrong node.")
     idx_of = {int(k): i for i, k in enumerate(junction)}
+
+    # density of the block group each way sits in, for statutory defaults
+    with (INTERIM / "centroids.csv").open(encoding="utf8") as fh:
+        cent0 = list(csv.DictReader(fh))
+    with (INTERIM / "acs_blockgroups.csv").open(encoding="utf8") as fh:
+        pop0 = {r["GEOID20"]: float(r["pop"]) for r in csv.DictReader(fh)}
+    c_lat = np.array([float(r["lat"]) for r in cent0])
+    c_lon = np.array([float(r["lon"]) for r in cent0])
+    sqmi = np.array([max(float(r["arealand_m2"] or 0), 1.0)
+                     for r in cent0]) / 2_589_988.0
+    dens = np.array([pop0.get(r["GEOID20"], 0.0) for r in cent0]) / sqmi
+    lat_c = np.radians(c_lat.mean())
+    bg_tree = cKDTree(np.column_stack(
+        [np.radians(c_lon) * 6_371_000 * np.cos(lat_c),
+         np.radians(c_lat) * 6_371_000]))
+    rural_mi = urban_mi = 0.0
     n = len(junction)
 
     # ---- pass 2 with stress ---------------------------------------------
@@ -213,6 +236,17 @@ def main():
         cum = np.concatenate([[0.0], np.cumsum(seg)])
         at = [i for i, kk in enumerate(k) if int(kk) in idx_of]
         sp = s20.parse_maxspeed(w.get("s"))
+        if not sp and hw in LOCAL:
+            mid = c[len(c) // 2]
+            _, bi = bg_tree.query([np.radians(mid[1]) * 6_371_000
+                                   * np.cos(lat_c),
+                                   np.radians(mid[0]) * 6_371_000])
+            rural = dens[bi] < URBAN_PER_SQMI
+            sp = RURAL_MPH if rural else URBAN_MPH
+            if rural:
+                rural_mi += cum[-1] / 1609.344
+            else:
+                urban_mi += cum[-1] / 1609.344
         t = None
         if hw in MAJOR_SPEED:
             major_seen += 1
@@ -246,6 +280,9 @@ def main():
     V = np.asarray(V, np.int32)
     L = np.asarray(L, np.float64)
     LOW = np.asarray(LOW, bool)
+    print(f"\n  untagged local streets given statutory speeds: "
+          f"{urban_mi:,.0f} mi at {URBAN_MPH:.0f} mph (urban), "
+          f"{rural_mi:,.0f} mi at {RURAL_MPH:.0f} mph (rural)")
     BIKE_OK = np.asarray(BIKE_OK, bool)
     WALK_OK = np.asarray(WALK_OK, bool)
     WLOW = np.asarray(WLOW, bool)
