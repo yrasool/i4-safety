@@ -37,6 +37,7 @@ Writes: data/final/mep_by_blockgroup.csv, data/final/mep_summary.csv
 """
 
 import csv
+import os
 import sys
 from pathlib import Path
 
@@ -169,6 +170,49 @@ def main():
     f = np.array([float(next(x["f_share"] for x in freq
                              if x["activity"] == a)) for a in acts])
     f = f / f.sum()
+
+    # --- OPTIONAL sensitivity override, e.g. MEP_WORK_SHARE=0.272 ------------
+    # BTS passenger origin-destination data (phone traces, 2022) puts WORK at
+    # 27.2% of trips INSIDE the Tampa metro, against the 20.3% this pipeline
+    # takes from NHTS 2022 South Atlantic. The FDOT South Florida study used
+    # 30%. The gap is worth quantifying rather than arguing about, so this
+    # pins work at a chosen share and rescales the other five activities
+    # PROPORTIONALLY, which is the only defensible way to absorb the residual
+    # when the outside source is binary (work / non-work) and cannot say how
+    # the non-work half divides.
+    #
+    # A run with the override set REFUSES TO WRITE. A sensitivity scenario
+    # must never be able to leave its numbers sitting in data/final/ where the
+    # report generator and the number checker will read them as the real
+    # result. This project has already shipped one figure that came from a
+    # retired script's leftover output.
+    # MEP_FREQ_JSON replaces the WHOLE vector, e.g. from the 2018-19 Tampa Bay
+    # Regional Travel Survey, which is local but does not separate medical from
+    # shopping/errands/appointments. Shares are renormalised, so they need not
+    # sum to 1.
+    override = os.environ.get("MEP_FREQ_JSON")
+    if override:
+        import json
+        given = json.loads(override)
+        if set(given) != set(acts):
+            sys.exit(f"FAIL: MEP_FREQ_JSON has {sorted(given)}, "
+                     f"need {sorted(acts)}")
+        f = np.array([given[a] for a in acts], dtype=float)
+        f = f / f.sum()
+        print("\n  *** SENSITIVITY RUN: frequency vector replaced. "
+              "NOTHING WILL BE WRITTEN. ***")
+
+    override = override or os.environ.get("MEP_WORK_SHARE")
+    if os.environ.get("MEP_WORK_SHARE") and not os.environ.get("MEP_FREQ_JSON"):
+        wj = acts.index("work")
+        target = float(override)
+        rest = 1.0 - target
+        others = f.sum() - f[wj]
+        f = f * (rest / others)
+        f[wj] = target
+        print(f"\n  *** SENSITIVITY RUN: work share pinned to {target:.1%} "
+              f"(pipeline value {float(next(x['f_share'] for x in freq if x['activity'] == 'work')):.1%}). "
+              f"NOTHING WILL BE WRITTEN. ***")
 
     # --- Equation 1 spatial equivalency, A*/A_k ---------------------------
     # NATIONAL, from step 25. NOT the local maximum. The reference defines A_k
@@ -333,6 +377,11 @@ def main():
         m = np.array([x == c for x in county])
         print(f"  {c:<15}{base[m].mean():>11,.1f}{lo[m].mean():>12,.1f}"
               f"{lo[m].mean()/base[m].mean()-1:>+9.1%}")
+
+    if override:
+        print("\nSENSITIVITY RUN - mep_by_blockgroup.csv NOT written, so the "
+              "real result in data/final/ is untouched.")
+        return
 
     FINAL.mkdir(parents=True, exist_ok=True)
     with (FINAL / "mep_by_blockgroup.csv").open("w", newline="",
