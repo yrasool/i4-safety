@@ -304,18 +304,25 @@ def main():
         ("mean loss per block group", f"{sum(losses) / len(losses):.1%}",
          r"per block group"),
     ]
-    SPOKEN = ["INTERVIEW_QA.md", "PRESENTATION.md", "WHAT_I_DID.md",
+    SPOKEN = ["interview/INTERVIEW_QA.md", "interview/PRESENTATION.md",
+              "docs/WHAT_I_DID.md",
               # Added 2026-09-14: the four explainer files. Same rule - if a
               # file raises a subject, its number must match the data.
-              "MATH.md", "DATA.md", "ASSUMPTIONS_AND_CHOICES.md",
-              "HOW_IT_RUNS_VS_STANDARD_MEP.md", "MEP.md", "CORRECTIONS.md", "LEARN.md", "STUDY_PLAN.md"]
+              "docs/MATH.md", "docs/DATA.md", "docs/ASSUMPTIONS_AND_CHOICES.md",
+              "docs/HOW_IT_RUNS_VS_STANDARD_MEP.md", "docs/MEP.md",
+              "docs/CORRECTIONS.md", "learn/LEARN.md", "learn/STUDY_PLAN.md"]
     print(f"\n  the documents that go in the room "
           f"(conditional: anchor present => value must match)")
+    missing = [n for n in SPOKEN if not (ROOT / n).exists()]
+    if missing:
+        # This used to print "not found, skipped" and carry on, so moving the
+        # documents into folders on 2026-09-16 would have produced a PASS that
+        # checked none of them. A document the checker cannot find is a
+        # failure, not an exemption.
+        sys.exit(f"FAIL: spoken documents not found: {missing}. Update SPOKEN "
+                 f"to their new paths; a skipped document is not a checked one.")
     for name in SPOKEN:
         path = ROOT / name
-        if not path.exists():
-            print(f"    -- {name} not found, skipped")
-            continue
         dlines = [norm(ln) for ln in path.read_text(encoding="utf8").split("\n")]
         checked = wrong = 0
         for label, want, anchor in SPOKEN_CHECKS:

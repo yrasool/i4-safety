@@ -487,6 +487,226 @@ Have this ready. It is a real question and the honest answer is your best one.
 
 ---
 
+# Part 4 — questions about the changes of 15–16 September
+
+Everything below was built after the first seventeen answers were written. These are
+the questions the newest work invites, and a panel that reads the repository will
+ask them.
+
+---
+
+## Q18. "How do you get from road-segment risk to a neighbourhood?"
+
+**Say:** "By following the route. For each of 2,170 neighbourhoods I build the
+shortest-time tree over the driving network, and add up each road's crash cost
+times its miles along the actual path to every place reachable in 40 minutes.
+That is 2,820,703 routes, and it runs in 16 minutes."
+
+**If they ask how that is fast:** "A sum along a route is a sum up a tree. With
+pointer jumping every node gets its full-route total in about a dozen vectorised
+passes, so I never walk a route one edge at a time."
+
+**If they ask why:** "My first version used the roads *near* each neighbourhood.
+It explained 1.3% of the map, and 77% of that was just which county you live in.
+Routed, local danger explains 8.9%, and county explains only 23% of it. The map
+became about neighbourhoods rather than counties."
+
+**One finding worth volunteering:** danger per mile *falls* with trip length —
+$0.133 in the 10-minute band, $0.097 at 40 minutes — because short trips run on
+local arterials with crossings and driveways, and long ones reach freeways.
+
+---
+
+## Q19. "Doesn't routing just add more harm?"
+
+**Say:** "No. The regional crash cost is unchanged at $0.1059 a mile — same deaths,
+same miles. Routing changes *which trips carry it*. The roads people drive to
+reach things are riskier than the average mile, so routed values run higher."
+
+**The caveat to give before they ask:** "Only state roads carry a rate, because
+FDOT publishes traffic counts only for them. Each route's cost is the average over
+its state-road miles. State roads are 8.5% of network miles but 76% of the miles
+routes actually use, and only 0.1% of routes had none."
+
+---
+
+## Q20. "Can people in Tampa Bay really bike on those roads?"
+
+**This is the strongest recent answer. Lead with it.**
+
+**Say:** "No, and I measured how much that matters. Standard MEP lets a bike use
+any road but a motorway. I rebuilt bike reach on low-stress roads only — quiet
+streets, paths, bike lanes on slower roads — using the standard Level of Traffic
+Stress method."
+
+| bike network | MEP drop |
+|---|---:|
+| any road (standard MEP) | 23.4% |
+| **low-stress plus short hops (shipped)** | **16.2%** |
+| strictly low-stress | 10.9% |
+
+"So about seven points of my original headline were bike trips along 45-mph roads
+almost nobody rides. I now report 16.2%."
+
+---
+
+## Q21. "Why allow hops along busy roads at all? Isn't 250 metres arbitrary?"
+
+**Say:** "Because the strict version turns the region into islands, and I measured
+why. Remove every busy road and the bike network breaks into 991 pieces; a typical
+neighbourhood connects to 4 others instead of 2,137. Allow stretches of 250 metres
+or less and it rejoins — 148 pieces, 1,991 connected. So the pieces are separated by
+about a block of arterial. That is the subdivision pattern: developments that open
+only onto an arterial."
+
+**On the number:** "250 metres is about one suburban block. The hops cost three
+times the normal time, so a route can cross a block but can't ride an arterial end to
+end. Sidewalk riding is legal in Florida, which is how most people cover that block.
+The strict version, 10.9%, is reported beside it."
+
+---
+
+## Q22. "Does that hold across all five counties?"
+
+**Say:** "No, and my prediction was wrong. I expected the newer suburbs in Pasco
+and Hernando to lose the most bike access."
+
+| county | bike reach kept |
+|---|---:|
+| Pinellas | 61% |
+| Hernando | 47% |
+| Hillsborough | 38% |
+| Pasco | 33% |
+| Citrus | 6% |
+
+"Pinellas keeps the most — St. Petersburg's older grid. Citrus keeps almost none;
+it's rural and its roads are fast. Hernando surprised me. I suspected a data error,
+checked, and it's real: 63 of the 80 Hernando neighbourhoods in its big connected
+area are in Spring Hill, a planned 1970s grid, and trails link it onward."
+
+**Why this answer is good:** you made a prediction, tested it, and reported that it
+failed.
+
+---
+
+## Q23. "Most OpenStreetMap roads have no speed limit. What did you assume?"
+
+**Say:** "That was a real error. 84 to 100% of local-street miles in every county
+have no speed tag, and my first version assumed 25 mph for all of them — which
+called fast rural roads safe to bike on. I replaced it with Florida's statutory
+defaults: 30 mph in residential areas, 55 elsewhere, reading 'elsewhere' as a block
+group under 1,000 people per square mile. 21,460 miles moved to 55."
+
+**What it changed:** "Very little regionally — 17.2% to 16.6% at that stage —
+because rural roads carry few people. A lot in Citrus and Pasco."
+
+---
+
+## Q24. "Why cap walking at 20 minutes? MEP uses 40."
+
+**Say:** "Nobody here walks 40 minutes to a grocery store or a clinic. FDOT's own
+South Florida MEP study capped nonmotorised trips at 20 minutes, so I used the
+same. It moved the headline by 0.2 points, because walking was already a small share
+of the loss. It's there because it's true, not because it changes the answer."
+
+---
+
+## Q25. "What if you charge the harm to the car that caused it?"
+
+**Know this cold. It is the biggest single judgement in the project.**
+
+**Say:** "It halves the result, and it changes who carries it. I ran the whole MEP
+both ways."
+
+| who pays for a person hit by a car | MEP drop |
+|---|---:|
+| **the person hurt (shipped)** | **16.2%** |
+| the car that caused it | 8.2% |
+
+"Under the first, loss rises with carless households, 14.0% to 19.1%. Under the
+second that gradient disappears — every group loses about 9% — and the car-
+dependent rural counties lose most."
+
+**Why you ship the first:** "MEP measures what a traveller faces when deciding how
+to travel — fuel, fare, time. The danger falls on the person walking, whoever caused
+it. Charging it to the car answers a different question: who should *pay*. That's
+the right convention for pricing policy, and the wrong one for accessibility."
+
+---
+
+## Q26. "Your crash data is licensed. How can I check your numbers?"
+
+**Say:** "Against Signal Four's public dashboard, which needs no login. For my five
+counties, 2019 to 2025, it shows 3,526 killed and 20,526 seriously injured. My
+extract has 3,471 and 20,305 — 98.4% and 98.9%. Slightly low, which is right: my
+extract stops in November 2025."
+
+---
+
+## Q27. "Is Tampa Bay just the most dangerous part of Florida?"
+
+**Say:** "Somewhat, and I can say by how much. These counties have 15.6% of
+Florida's people and 17.9% of its walking and cycling fatalities — 1.15 times their
+share. What I can't separate is whether that's more danger or more walking, because
+nobody publishes walking mileage for Florida either."
+
+---
+
+## Q28. "You say buses are nearly free. What about people buses hit?"
+
+**Say:** "I measured it locally. Counting harm a bus causes to people outside it,
+transit buses cost $0.065 a passenger-mile against $0.051 for cars — 1.26 times.
+Not because buses are dangerous; because ridership here is low, so each
+passenger-mile carries a lot of bus."
+
+**Volunteer the error:** "My first pass said three times a car. I'd counted every
+bus — charter, shuttle, tour — against HART and PSTA's passenger-miles only. Once I
+kept only transit buses it fell to 1.26. It rests on three deaths, so it stays out of
+the headline."
+
+---
+
+## Q29. "Your trip purposes come from a national survey. Florida is different."
+
+**Say:** "It is — and it doesn't change the answer. Three local sources put work
+trips near 27%, against the 20.3% I use."
+
+| source for the work share | work | MEP drop |
+|---|---:|---:|
+| NHTS 2022, South Atlantic (shipped) | 20.3% | 16.2% |
+| Tampa Bay Regional Travel Survey | 27.0% | 16.0% |
+| FDOT South Florida defaults | 30.0% | 16.0% |
+
+"The drop is set by how dangerous each mode is per mile, not by where people are
+going."
+
+---
+
+## Q30. "Your crash rates are fixed. More cyclists make cycling safer."
+
+**Say:** "That's right, and my model can't represent it. The safety-in-numbers work
+— Jacobsen 2003 onward — finds injury rates per cyclist fall as cycling grows. My
+rates are constant, so this measures today's conditions. It can't score a future
+with more cycling; it would predict proportionally more harm, which is the wrong
+sign. Building rates that respond to mode share is the first thing I'd add."
+
+---
+
+## Q31. "What would you do next?"
+
+**Say, in this order:**
+
+1. "A **usage-weighted** version. People here bike mostly for exercise — the Pinellas
+   Trail survey found 69% exercise, 2% commuting — and MEP counts what you *could*
+   reach, not what you do. I'd report both side by side."
+2. "The **same pipeline on a region where cycling is safe** — Seattle has an open
+   household travel survey. If crash harm removes 16% here and 5% there, that says
+   something about safety and accessibility, not about Florida."
+3. "**Local walking and cycling counts.** Exposure is still my weakest input."
+4. "**Crash rates that respond to how many people bike and walk.**"
+
+---
+
 # The one-page version
 
 If you have sixty seconds:
@@ -499,8 +719,12 @@ If you have sixty seconds:
   OpenStreetMap, live bus timetables, federal jobs and travel-survey data — and
   added crash cost to the money term. **No new equation, no new weight.**
 - **Pricing crash harm removes 16.2% of the region's score** - 23.0% if bikes may use any road, as standard MEP assumes.
-- **Cycling supplies 79% of that**, because MEP prices cycling as free and here
-  it costs about $10 a mile in crash harm.
+- **Cycling supplies 68% of that**, because MEP prices cycling as free and here
+  it costs about $10 a mile in crash harm — and that is *after* restricting bikes
+  to roads people would actually ride, which took the headline down from 23.4%.
 - **It passes NREL's own published validation scenarios**, plus two I added.
-- The block-group map, with driving danger routed, carries 8.9% local crash risk - nearly seven times the 1.3% of the old proximity method - of the
-  variance. **It is not a crash-risk map and I do not present it as one.**
+- The block-group map, with driving danger following real routes, carries 8.9% of its
+  variance in local crash risk — nearly seven times the 1.3% of the old nearby-roads
+  method. **It is a map of access, with a real local safety component, not a crash map.**
+- **Charged to the car that caused the harm instead, the drop is 8.2%.** I ship the
+  person-hurt version because MEP measures what the traveller faces.

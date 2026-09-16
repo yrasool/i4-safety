@@ -185,7 +185,7 @@ def test_transit_na_is_a_true_zero_but_drive_na_is_not():
     SUM. "No car-reachable jobs" is essentially never real, so it must raise
     rather than default. Guards against someone making the handling uniform.
     """
-    six = (SRC / "06_results.py").read_text(encoding="utf-8")
+    six = (SRC.parent / "archive" / "retired_v1_steps" / "06_results.py").read_text(encoding="utf-8")
     assert '"A_transit"' in six and "fillna(0.0)" in six
     assert 'assert t["A_drive"].notna().all()' in six, (
         "A_drive must assert, not fillna - a defaulted 0 reads as 'nowhere to "
@@ -202,7 +202,7 @@ def test_zero_household_block_groups_are_excluded_not_filled():
     filed those block groups under "no car-free households" and let them pull
     the quintile medians in a distributional claim.
     """
-    seven = (SRC / "07_equity.py").read_text(encoding="utf-8")
+    seven = (SRC.parent / "archive" / "retired_v1_steps" / "07_equity.py").read_text(encoding="utf-8")
     assert 'empty = df["HH_est"] == 0' in seven
     assert ".fillna(0)" not in seven.split("zero_car_share")[1][:200], (
         "zero_car_share must not fillna - exclude the rows instead")
