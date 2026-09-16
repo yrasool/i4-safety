@@ -271,6 +271,29 @@ def main():
 
     r_drive, R_TRANSIT, R_WALK, R_BIKE = read_rates()
 
+    # VERSION B, opt-in: MEP_CONVENTION=B charges crash harm to the mode that
+    # CAUSES it rather than the person who suffers it (step 35). Driving's rate
+    # rises to version B's; walking and cycling keep only the share of their
+    # casualties that did NOT involve a motor vehicle. The car-involved share is
+    # measured on deaths and applied to serious injuries too, which is the one
+    # approximation here. No-write.
+    conv_scale = 1.0
+    if os.environ.get("MEP_CONVENTION") == "B":
+        with (FINAL / "externality.csv").open(encoding="utf8") as fh:
+            ex = {(r["metric"], r["mode"]): float(r["value"])
+                  for r in csv.DictReader(fh)}
+        conv_scale = (ex[("r_drive_version_b", "drive")]
+                      / ex[("r_drive_version_a", "drive")])
+        r_drive = r_drive * conv_scale
+        keep_w = 1 - ex[("car_involved_share_K", "walk")]
+        keep_b = 1 - ex[("car_involved_share_K", "bike")]
+        R_WALK = (R_WALK[0] * keep_w, R_WALK[1] * keep_w)
+        R_BIKE = (R_BIKE[0] * keep_b, R_BIKE[1] * keep_b)
+        override = override or "convention_B"
+        print(f"\n  *** SENSITIVITY RUN: VERSION B (harm charged to the mode "
+              f"that causes it). drive x{conv_scale:.3f}, walk x{keep_w:.4f}, "
+              f"bike x{keep_b:.4f}. NOTHING WILL BE WRITTEN. ***")
+
     # PLACE-VARYING DRIVE RISK, if step 30 has produced it. Every other rate is
     # a scalar; this one is a vector of length n, one value per origin, built
     # from Empirical-Bayes segment rates weighted by MEP's own time decay.
@@ -343,6 +366,8 @@ def main():
                     # origin's own estimate rather than an arbitrary zero
                     route_bands[bi, k] = fallback[k]
                     empty += 1
+        # version B scales routed driving risk the same way as the regional rate
+        route_bands = route_bands * conv_scale
         print(f"\n  ROUTE-ASSIGNED drive risk by band (step 40), shipped. "
               f"{empty:,} of {len(BANDS) * n:,} origin-bands had no destination "
               f"and use the origin estimate.")
