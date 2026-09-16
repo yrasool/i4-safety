@@ -268,14 +268,14 @@ it — and it passes them.
 
 ## You CAN compare
 
-- **Percentages** — "crash cost removes 23.4%" doesn't depend on how places are counted.
+- **Percentages** — "crash cost removes 16.2%" doesn't depend on how places are counted.
 - **Rankings** — which neighbourhoods score higher or lower.
 - **Behaviour** — our version passes NREL's own tests: better fuel economy → score up (+27.6%); faster driving
   → up; higher driving cost → down (−30.1%); no change → same score.
 
 ## You CANNOT compare
 
-- **Our raw score (7,567) with NREL's numbers** for other places.
+- **Our raw score (7,567 by standard MEP, 6,908 on realistic bike and walk networks) with NREL's numbers** for other places.
   - NREL's own South Florida run gave **122.35** with place counts and **11,983** with job counts — for the **same**
     region.
   - We use job counts, so our score is on the **11,983** kind of scale — but it's still not directly comparable.

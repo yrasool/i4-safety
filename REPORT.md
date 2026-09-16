@@ -22,20 +22,20 @@ This report computes MEP for 2,170 block groups from primary data, then adds
 crash harm to the term MEP already uses for dollars. Nothing else changes: no
 new equation, no new weight.
 
-**Pricing crash harm removes 23.4% to 23.5% of Tampa Bay's accessibility
+**Pricing crash harm removes 16.2% of Tampa Bay's accessibility
 score.**
 
 That is on MEP's own aggregation rule: Hou et al. (2019) p.9, "the population
 proportion weighted summation of MEP across tracts or block groups", which is
 how Columbus's published 162 is computed. An unweighted mean of block groups
-gives 24.7% to 24.8%, and a population-weighted mean of per-block-group ratios
-gives 21.7%. All three are defensible statistics; only the first is MEP's, and
+gives 17.6%, and a population-weighted mean of per-block-group ratios
+gives 14.8%. All three are defensible statistics; only the first is MEP's, and
 an earlier draft led with the largest without naming which it used.
 
 The correction is not spread evenly. It falls hardest on cycling, which MEP
 prices at zero energy and zero cost while it carries about 90 times driving's
 crash cost per mile. And it falls hardest on the places where the most households have
-no car, rising from 21.2% in the lowest zero-car quintile to 26.2% in the
+no car, rising from 14.0% in the lowest zero-car quintile to 19.1% in the
 highest, though the bottom two quintiles are effectively tied.
 
 ---
@@ -471,23 +471,28 @@ Population-weighted, MEP's own rule:
 
 | | city score | change |
 |---|---:|---:|
-| published | 7,567.3 | |
-| with crash harm, low | 5,796.1 | **−23.4%** |
-| with crash harm, high | 5,788.6 | **−23.5%** |
+| published | 6,908.2 | |
+| with crash harm, low | 5,790.9 | **−16.2%** |
+| with crash harm, high | 5,786.9 | **−16.2%** |
+
+Bike reach is measured on low-stress roads plus hops of 250 m or less, and walk reach on low-stress roads
+up to 20 minutes, the nonmotorised cap FDOT's South Florida study used
+(steps 41-43; ASSUMPTIONS section L). With bikes allowed on any road but a motorway, as standard MEP
+assumes, the published score is 7,528.4 and the drop is 23.0%; on strictly low-stress roads it is 10.9%.
 
 Unweighted mean of block groups, for comparison only:
 
 | | mean | change |
 |---|---:|---:|
-| published | 8,241.2 | |
-| with crash harm, low | 6,206.4 | −24.7% |
-| with crash harm, high | 6,197.7 | −24.8% |
+| published | 7,522.9 | |
+| with crash harm, low | 6,200.8 | −17.6% |
+| with crash harm, high | 6,195.7 | −17.6% |
 
 Decomposed:
 
 | term | change | shipped? |
 |---|---:|---|
-| injury only | −24.7% | **yes, this is the model** |
+| injury only | −17.6% | **yes, this is the model** |
 | [deleted] delay only, 30% incident share | −5.5% | no |
 | [deleted] injury and delay, high | −29.2% | no |
 
@@ -500,9 +505,9 @@ shipped headline contains them.
 
 | mode | alone | share of drop | 40-min reach |
 |---|---:|---:|---:|
-| bike | −18.9% | **76.8%** | 12,035 |
-| drive | −4.5% | 18.2% | 108,416 |
-| walk | −1.2% | 5.0% | 449 |
+| bike | −11.9% | **67.8%** | 4,570 |
+| drive | −5.0% | 28.2% | 108,416 |
+| walk | −0.7% | 3.9% | 55 |
 | transit | −0.0% | 0.0% | 89 |
 
 Cycling dominates, and it is worth being precise about why. A mode's share of
@@ -521,28 +526,28 @@ literal-exposure figure this same report describes replacing.
 
 | county | population | MEP loss per resident |
 |---|---:|---:|
-| Citrus | 158,693 | 25.9% |
-| Hernando | 201,512 | 26.5% |
-| Pinellas | 960,565 | 23.7% |
-| Hillsborough | 1,489,634 | 20.6% |
-| Pasco | 588,758 | 18.4% |
+| Hernando | 201,512 | 19.4% |
+| Pinellas | 960,565 | 17.2% |
+| Citrus | 158,693 | 15.9% |
+| Hillsborough | 1,489,634 | 13.5% |
+| Pasco | 588,758 | 12.5% |
 
 ### Who bears it
 
 | zero-car quintile | block groups | population | zero-car share | MEP loss |
 |---|---:|---:|---:|---:|
-| 1 (lowest) | 434 | 645,028 | 0.0% | 21.2% |
-| 2 | 434 | 764,952 | 0.7% | 21.3% |
-| 3 | 434 | 773,532 | 3.4% | 22.1% |
-| 4 | 433 | 638,015 | 7.2% | 24.4% |
-| 5 (highest) | 433 | 577,635 | 19.7% | **26.2%** |
+| 1 (lowest) | 434 | 645,028 | 0.0% | 14.0% |
+| 2 | 434 | 764,952 | 0.7% | 14.9% |
+| 3 | 434 | 773,532 | 3.4% | 15.4% |
+| 4 | 433 | 638,015 | 7.2% | 17.2% |
+| 5 (highest) | 433 | 577,635 | 19.7% | **19.1%** |
 
-The top quintile loses 5.0 percentage points more than the bottom, Spearman
+The top quintile loses 5.1 percentage points more than the bottom, Spearman
 +0.27, and the progression now rises at every quintile. Before driving danger was
 routed, the bottom two were tied at 20.4% and 20.3%; routing is what separated
 them. It is still a correlation, not a cause.
 
-Mean loss is 23.0% per block group, and 21.7% per resident. The gap between
+Mean loss is 16.1% per block group, and 14.8% per resident. The gap between
 those two is the reminder that a block group is not a person: the rural block
 groups losing most are also the emptiest.
 
@@ -596,12 +601,12 @@ the surface is decomposed rather than declared fixed:
 
 | | |
 |---|---:|
-| variance explained by mode mix alone | **93.0%** |
-| variance from local crash risk | **7.0%** |
+| variance explained by mode mix alone | **91.1%** |
+| variance from local crash risk | **8.9%** |
 | R² of loss on mode mix alone | 0.9867 |
 | Spearman against the scalar-rate surface | 0.9902 |
 
-**Local risk, routed, contributes 7.0% of the surface's
+**Local risk, routed, contributes 8.9% of the surface's
 variance. Calling this a crash-risk map would not survive a reviewer.**
 
 It is also not block-group-scale. Regressing `r_i` on county dummies alone gives
@@ -694,10 +699,10 @@ the national figure is reported beside it rather than discarded.
 
 | `r_walk` | MEP change | | `r_bike` | MEP change |
 |---:|---:|---|---:|---:|
-| 1.16 | −23.3% | | 0.96 | −12.4% |
-| 11.57 | −24.0% | | 9.59 | −24.0% |
-| 12.49 | −24.0% | | 11.79 | −24.1% |
-| 115.66 | −24.0% | | 95.93 | −24.2% |
+| 1.16 | −17.2% | | 0.96 | −10.2% |
+| 11.57 | −17.6% | | 9.59 | −17.6% |
+| 12.49 | −17.6% | | 11.79 | −17.6% |
+| 115.66 | −17.6% | | 95.93 | −17.7% |
 
 Walk exposure barely matters: two orders of magnitude move the result by one
 point. Bike exposure matters a great deal, which is the honest weak point of the
@@ -883,7 +888,7 @@ one regional number per mode. Segment-level rates exist in this project for
 2,429 FDOT roads, but attributing them to origins needs route assignment that is
 not built.
 
-**Cycling carries 76.8% of the loss, and its regional exposure rests on 35
+**Cycling carries 67.8% of the loss, and its regional exposure rests on 35
 surveyed trips.** The regional cycling estimate comes from 35 NHTS trip records. The
 national estimate, on 298 trips, is reported alongside it and the two bracket
 the range. This is the thinnest sample any headline figure depends on.

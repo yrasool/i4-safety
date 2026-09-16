@@ -8,7 +8,7 @@ This project calculates MEP from scratch for Florida DOT District 7 — Hillsbor
 Pasco, Hernando and Citrus counties, 2,170 Census block groups — and adds the one missing
 cost: **crash death and serious injury**, priced per passenger-mile.
 
-**Result: counting crash harm removes 23.4% of the region's MEP score**, mostly because MEP
+**Result: counting crash harm removes 16.2% of the region's MEP score**, mostly because MEP
 treats cycling as free while it is very dangerous per mile here.
 
 ---

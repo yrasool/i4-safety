@@ -387,8 +387,8 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
 
 ### H1. Weight neighbourhoods by population
 - **The choice:** MEP's rule — more people, more weight.
-- **Tested?** **Yes** — three ways compared: population-weighted **23.4%**, plain average **24.7%**, average of each
-  neighbourhood's own drop weighted by people **21.7%**.
+- **Tested?** **Yes** — three ways compared: population-weighted **16.2%**, plain average **17.6%**, average of each
+  neighbourhood's own drop weighted by people **14.8%**.
 
 ### H2. Report percentages and rankings, never raw scores against other cities
 - **Why:** the raw score depends on how places are counted (NREL: 11,983 vs 122.35 for one region).
@@ -403,14 +403,14 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
   |---:|---:|
   | $0.96 (a tenth) | 12.2% |
   | $4.80 (half) | 22.3% |
-  | **$9.59 (ours)** | **24.7%** |
+  | **$9.59 (ours)** | **17.6%** |
   | $95.93 (ten times) | 24.0% |
 
   With **both** walking and biking at a tenth, the drop is **11.5%**.
 
 ### H5. "Not a crash-danger map"
 - **The choice:** never present the neighbourhood map as showing where crashes are worst.
-- **Why:** only **7.0%** of the differences between neighbourhoods come from local danger (1.3% before driving danger was routed; see K1).
+- **Why:** only **8.9%** of the differences between neighbourhoods come from local danger (1.3% before driving danger was routed; see K1).
 - **Tested?** **Yes** — measured.
 
 ---
@@ -432,8 +432,8 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
 | walking and biking danger by place (F7) | too weak to use |
 | MEP's settings (G1) | passes NREL's tests |
 | traffic-jam minutes (G5) | 24.9% with, 22.5% without |
-| combining neighbourhoods (H1) | 21.7–24.7% depending on method |
-| **trip shares, four sources (D4)** | **settled: 20.3% / 27.0% / 27.2% / 30% work share all give 23.3-23.4%** |
+| combining neighbourhoods (H1) | 14.8–17.6% depending on method |
+| **trip shares, four sources (D4)** | **settled: 20.3% / 27.0% / 27.2% / 30% work share all give 16.0-16.2%** |
 
 ### Not tested — the open questions
 
@@ -481,10 +481,10 @@ The Tampa survey also gives shopping 35.1% against our 28.1%, social 16.3% again
 
 | trip shares used | MEP drop |
 |---|---:|
-| ours, NHTS South Atlantic | -23.4% |
-| Tampa Bay Regional Travel Survey | -23.3% |
-| FDOT South Florida defaults | -23.3% |
-| a deliberately low 15% work share | -23.4% |
+| ours, NHTS South Atlantic | -16.2% |
+| Tampa Bay Regional Travel Survey | -16.0% |
+| FDOT South Florida defaults | -16.0% |
+| a deliberately low 15% work share | -16.2% |
 
 **Why.** The drop is set by how dangerous each mode is per mile, not by which destinations people
 are heading to. Changing the destination mix rescales every mode's opportunities together, so the
@@ -596,3 +596,83 @@ Bayes, every route that crossed a lucky or unlucky segment would inherit its noi
 `MEP_DRIVE_RISK=proximity python src/23_mep.py` gives the step-30 surface (22.5%) and
 `MEP_DRIVE_RISK=scalar python src/23_mep.py` the one-regional-number surface (22.9%). Both are
 no-write scenario runs.
+
+
+---
+
+## L. Added 16 September 2026 — bikes and walkers only on roads people use
+
+### L1. What changed
+
+Standard MEP lets a bike use **any road but a motorway** and counts walks up to **40 minutes**. Three
+changes, each tested before it was shipped:
+
+| change | why | step |
+|---|---|---|
+| **bikes use low-stress roads, plus hops of 250 m or less** along busier roads at 3× the time | people do not cycle along 45-mph, six-lane arterials; they do cover a block of one to reach the next subdivision entrance | 41, 42 |
+| **walkers use low-stress roads** — footpaths, streets at or below 30 mph, sidewalks beside roads at or below 45 mph | nobody walks along an unsidewalked 55-mph rural road | 42 |
+| **walks count only up to 20 minutes** | the cap FDOT's own South Florida MEP study used for its nonmotorised scenario; people here do not walk 40 minutes to a store or clinic | constants |
+
+Low-stress rules are simplified from Mekuria, Furth and Nixon (2012), the standard Level of Traffic
+Stress method. Lane counts, bike lanes and sidewalks come from OpenStreetMap tags for 44,220
+collectors and arterials, 91.1% of which matched.
+
+### L2. What it did to the headline
+
+| model | MEP drop |
+|---|---:|
+| bikes on any road, walks to 40 min (standard MEP) | 23.4% |
+| **realistic low-stress bikes and walks, walks to 20 min (shipped)** | **16.2%** |
+| strictly low-stress bikes, no busy-road hops | 10.9% |
+
+**About 7 points of the old headline were bike trips along roads almost nobody rides.** The walking
+changes together moved it by about 0.4 points; walking was already a small share of the loss.
+
+### L3. Why the strict version collapses — measured, not assumed
+
+Removing every high-stress road breaks the bike network into **991 islands**; the typical
+neighbourhood is connected to **4** others instead of 2,137. Allowing hops of 250 m or less rejoins
+almost all of it (148 islands, 1,991 connected). So the pieces are separated by **short stretches of
+arterial**, not by rivers or interstates — the pattern of subdivisions that connect only to arterials.
+Step 43.
+
+### L4. By county
+
+| county | bike reach kept | strict island (median) | drop, shipped |
+|---|---:|---:|---:|
+| Pinellas | 61% | 8 | 18.3% |
+| Hernando | 47% | 228 | 20.7% |
+| Hillsborough | 38% | 2 | 17.6% |
+| Pasco | 33% | 1 | 12.8% |
+| Citrus | 6% | 1 | 18.1% |
+
+(Drop is the plain average of each county's neighbourhoods, from step 23.)
+
+**Pinellas keeps the most** — St. Petersburg's older connected grid. **Citrus keeps almost none** —
+rural, fast roads. **Hernando holds up because of Spring Hill**: 63 of the 80 Hernando neighbourhoods in
+its big low-stress island sit in that planned 1970s residential grid, which trails then link onward.
+
+**A prediction that failed, recorded.** Before measuring, the expectation was that Pasco and Hernando
+would lose the most. Citrus does, and Hernando is second-best.
+
+### L5. A data fix made on the way
+
+84–100% of local-street miles in **every** county carry no speed tag in OpenStreetMap, and the first
+version assumed 25 mph for all of them — calling fast rural roads safe. Florida law (s.316.183) sets
+unposted limits at **30 mph** in residential districts and **55 mph** elsewhere; "elsewhere" is read as
+a block group below 1,000 people per square mile. 21,460 miles moved to 55 mph. The regional result
+barely moved (17.2% → 16.6% before the walking changes) because rural roads carry few people; Citrus
+and Pasco moved a lot.
+
+### L6. How to reproduce the other versions
+
+All no-write:
+
+- `MEP_BIKE_NETWORK=any` — bikes on any road (standard MEP)
+- `MEP_BIKE_NETWORK=lts` — strict low-stress
+- `MEP_WALK_NETWORK=any` — walkers on any road
+- `MEP_WALK_MAX_MIN=40` — walks to 40 minutes
+
+The shipped choices live in one place, `SHIPPED_NETWORK` and `SHIPPED_MAX_MIN` in `constants.py`,
+and every step that reads a travel-time matrix goes through `load_tt()` — so MEP, its validation and
+the NREL scenario checks cannot run on different networks.

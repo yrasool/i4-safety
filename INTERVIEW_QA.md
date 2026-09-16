@@ -87,7 +87,7 @@ total, just distributed.
 
 ### What they mean
 
-Cycling is 76.8% of the answer. The cycling crash rate is deaths and injuries
+Cycling is 67.8% of the answer. The cycling crash rate is deaths and injuries
 divided by miles cycled. Miles cycled comes from the national travel survey —
 and in our region only **35 people** reported a bike trip.
 
@@ -270,7 +270,7 @@ instead of a promise.
 
 **Say the number first.**
 
-> "It is 93.0% mode mix and 7.0% local crash risk, now that driving danger follows the
+> "It is 91.1% mode mix and 8.9% local crash risk, now that driving danger follows the
 > actual route to each destination. Before routing it was 1.3%, and 77% of that local risk was
 > really a county effect. So it is a first-order, county-scale correction, and I
 > would not present it as a crash-risk map.
@@ -498,9 +498,9 @@ If you have sixty seconds:
 - I built MEP from scratch for 2,170 neighbourhoods — my own routing on
   OpenStreetMap, live bus timetables, federal jobs and travel-survey data — and
   added crash cost to the money term. **No new equation, no new weight.**
-- **Pricing crash harm removes 23.4% of the region's score.**
+- **Pricing crash harm removes 16.2% of the region's score** - 23.0% if bikes may use any road, as standard MEP assumes.
 - **Cycling supplies 79% of that**, because MEP prices cycling as free and here
   it costs about $10 a mile in crash harm.
 - **It passes NREL's own published validation scenarios**, plus two I added.
-- The block-group map, with driving danger routed, carries 7.0% local crash risk - five times the 1.3% of the old proximity method - of the
+- The block-group map, with driving danger routed, carries 8.9% local crash risk - nearly seven times the 1.3% of the old proximity method - of the
   variance. **It is not a crash-risk map and I do not present it as one.**

@@ -250,7 +250,7 @@ but very dangerous per mile.
   timetables) instead of paid ones.
 - **The one change to the formula:**
   > **money cost → money cost + crash cost per mile**
-- **Result:** Tampa Bay's MEP score drops **23.4%** once crash cost is counted — mostly because biking, which
+- **Result:** Tampa Bay's MEP score drops **16.2%** once crash cost is counted — mostly because biking, which
   MEP treats as free, is very dangerous per mile here.
 
 Full details: `HOW_IT_RUNS_VS_STANDARD_MEP.md`.

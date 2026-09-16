@@ -71,6 +71,13 @@ STEPS = [
     # cache FDOT polylines, and about 16 minutes. Its output is read by step 23
     # only under MEP_DRIVE_RISK=route until the switch is decided.
     ("40_route_assignment.py", 17, True, True),
+    # 41-42 build the low-stress bike and walk networks. SHIPPED since
+    # 2026-09-16: bike reach is measured on low-stress roads plus 250 m hops
+    # (constants.SHIPPED_NETWORK), so 42 must run before 23. 41 needs the
+    # network; 42 reruns step 20's junction passes and refuses to write if
+    # they no longer match graph_nodes.npy.
+    ("41_fetch_osm_lts_tags.py", 5, True, False),
+    ("42_bike_lts.py", 10, False, True),
     # 32 reads 29's segment_eb.csv, so it must follow it. It produces a
     # NEGATIVE result - non-motorist risk could not be made to vary by place -
     # and it is in the pipeline precisely so that negative result stays true
@@ -110,6 +117,9 @@ STEPS = [
     ("37_s4_public_check.py", 1, False, False),
     ("38_florida_context.py", 1, False, False),
     ("39_bus_externality.py", 2, False, False),
+    # 43 measures the low-stress islands and splits the result by county,
+    # running step 23 three ways; it reads 42's graphs and 23's inputs.
+    ("43_bike_islands.py", 6, False, True),
 ]
 
 

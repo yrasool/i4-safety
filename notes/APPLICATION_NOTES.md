@@ -53,7 +53,7 @@ Notes on how this project is presented in applications.
 | 10.5% of driving's cost vs 0.12% for transit | **22.1%** of driving's cost (deaths + injuries); deaths-only like-for-like: **11.7% vs 0.12%, about 95 to 1** |
 | 48× car vs bus fatality cost | **53.6×** on current inputs |
 | a quarter of car-free households with no transit access to jobs | not recalculated on the new build — **don't quote** without checking |
-| no headline MEP result | **pricing crash harm removes 23.4% of Tampa Bay's MEP score** |
+| no headline MEP result | **pricing crash harm removes 16.2% of Tampa Bay's MEP score** |
 
 **Still to do:** write a new bullet from the current numbers (`TODO.md` #1).
 
@@ -83,5 +83,5 @@ Notes on how this project is presented in applications.
 | "Your raw score is nothing like ours." | Raw scores depend on how places are counted — your South Florida study got 11,983 and 122.35 for one region. I compare percentages only |
 | "Isn't most of your drop just cycling?" | Yes — cycling is 18% of the score and about 79% of the drop. MEP counts potential access; here cycling is under 2% of real trips, so weighted by real travel it'd be roughly half. But 42% of cyclists killed died at night, which suggests they're riding to get somewhere |
 | "Who pays when a car hits a pedestrian?" | I charge the person hit, like every MEP cost; charged to the driver instead, driving's crash cost goes from $0.1059 to $0.1573 a mile. It's a choice, and I show both |
-| "Is your map a crash-risk map?" | Partly — 7.0% of neighbourhood differences come from danger on the routes actually driven, most of it within counties |
+| "Is your map a crash-risk map?" | Partly — 8.9% of neighbourhood differences come from danger on the routes actually driven, most of it within counties |
 | "What did you get wrong?" | Plenty, openly — see `CORRECTIONS.md`: the 11× reference-place error, the fake map, the delay term I deleted |

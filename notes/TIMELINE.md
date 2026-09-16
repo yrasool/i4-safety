@@ -90,6 +90,8 @@ CSV, reports), in the read-only `Yusra` folder.
 - Tried walking/biking danger by place (didn't work); road types (worked).
 - **Deleted the delay term** → headline **22.5%**.
 - **16 Sep: driving danger follows real routes** (step 40) → headline **23.4%**; local danger 1.3% → 7.0% of the map.
+- **16 Sep: bikes and walkers use low-stress roads** (steps 41–43) → headline **16.4%**; about 7 points had been bike trips along roads almost nobody rides.
+- **16 Sep: walking capped at 20 minutes**, as FDOT's South Florida study did → headline **16.2%**.
 - Traffic-by-year check; **who pays** when a car hits someone (93% → 99.0%).
 - Checker now reads the spoken documents; motorbikes and the national bus rate disclosed.
 - Found **three steps missing** from the run list; fixed; added the stale-file list.

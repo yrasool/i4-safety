@@ -99,9 +99,9 @@ def main():
 
     # ---- MEP by county under three bike networks ------------------------
     dumps = {}
-    for label, env in (("any road", ""), ("realistic", "lts_connect"),
+    for label, env in (("any road", "any"), ("realistic", "lts_connect"),
                        ("strict", "lts")):
-        tmp = Path(tempfile.gettempdir()) / f"mep43_{env or 'any'}.npz"
+        tmp = Path(tempfile.gettempdir()) / f"mep43_{env}.npz"
         e = dict(os.environ, MEP_BIKE_NETWORK=env, MEP_DUMP=str(tmp),
                  PYTHONIOENCODING="utf-8")
         r = subprocess.run([sys.executable, str(ROOT / "src" / "23_mep.py")],

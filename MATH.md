@@ -464,7 +464,7 @@ should count 4 times as much as one with 500. This is MEP's own rule.
 **The drop:**
 > **drop = 1 − (score with crash cost ÷ normal score)**
 
-Real region: 1 − (5,796 ÷ 7,567) = 1 − 0.766 = **23.4%**
+Real region: 1 − (5,791 ÷ 6,908) = 1 − 0.838 = **16.2%**
 
 ---
 
@@ -483,7 +483,7 @@ Real region: 1 − (5,796 ÷ 7,567) = 1 − 0.766 = **23.4%**
 | bus | 1 | 0.9995 | 1.0 | 0.0 |
 | **total** | **100** | | **77.0** | **23.0** |
 
-Bike's share = 17.85 ÷ 23.0 = **78%**. (Real region: **76.8%**.)
+Bike's share = 17.85 ÷ 23.0 = **78%**. (Real region: **67.8%**.)
 
 **Why the shares add up to exactly 100%:** each mode's crash cost only changes **that mode's** points.
 So the total loss is just the four losses added together, with nothing left over.
@@ -517,7 +517,7 @@ only shows **how people travel**, not where it's dangerous.
 exactly.
 
 **How it was (partly) broken:** giving each neighbourhood its **own** car crash cost (part 14). Then
-"1 − keep" for the car differs by place. Measured afterwards, local danger explains **7.0%** of the
+"1 − keep" for the car differs by place. Measured afterwards, local danger explains **8.9%** of the
 differences between neighbourhoods; mode mix explains **98.7%**.
 
 ---
@@ -780,11 +780,11 @@ Sort all neighbourhoods by their share of households **without a car**, and cut 
 
 | households without a car | drop |
 |---|---:|
-| fewest | 21.2% |
-| second | 20.3% |
-| middle | 21.0% |
-| fourth | 23.1% |
-| most | 26.2% |
+| fewest | 14.0% |
+| second | 14.9% |
+| middle | 15.4% |
+| fourth | 17.2% |
+| most | 19.1% |
 
 ### Rank correlation (Spearman)
 **What it's for:** a single number for "do these two things go up together?"
@@ -809,10 +809,10 @@ could explain a bigger drop.
 
 ## 20. How much the ranking changes
 
-**Rank correlation (Spearman) between the ranking before and after:** **0.989** — almost identical order.
+**Rank correlation (Spearman) between the ranking before and after:** **0.986** — almost identical order.
 
 **Median rank move:** for each neighbourhood, how many places it moved; then take the middle value:
-> **34 places** out of 2,170.
+> **36 places** out of 2,170.
 
 **Share that moved at all:** **99%**.
 
@@ -827,15 +827,15 @@ could explain a bigger drop.
 
 | bike crash cost per mile | drop |
 |---:|---:|
-| $0.96 (a tenth) | 12.2% |
-| $4.80 (half) | 22.3% |
-| **$9.59 (ours)** | **24.7%** |
-| $95.93 (ten times) | 24.0% |
+| $0.96 (a tenth) | 10.2% |
+| $4.80 (half) | 16.6% |
+| **$9.59 (ours)** | **17.6%** |
+| $95.93 (ten times) | 17.7% |
 
 **What it shows:**
-- **Halving** the bike number barely changes the drop (24.7% → 23.1%).
-- **Ten times higher** barely changes it (→ 24.0%).
-- Only a **tenth** makes a real difference (→ 12.2%).
+- **Halving** the bike number barely changes the drop (17.6% → 16.6%).
+- **Ten times higher** barely changes it (→ 17.7%).
+- Only a **tenth** makes a real difference (→ 10.2%).
 
 **Why:** of the "60% per dollar" rule (part 8). Once bike crash cost is above a few dollars, bikes keep
 almost nothing anyway — so going from $10 to $100 hardly matters, but going down to $1 does.

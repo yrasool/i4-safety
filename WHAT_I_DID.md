@@ -72,9 +72,14 @@ Each one is a **step** with a number, like "step 23".
 
 | | MEP score |
 |---|---:|
-| the normal way, without crash cost | **7,567** |
-| with crash cost added | **5,796** |
-| **drop** | **23.4%** |
+| the normal way, without crash cost | **6,908** |
+| with crash cost added | **5,791** |
+| **drop** | **16.2%** |
+
+**Bikes and walkers only count roads people would feel safe on** — quiet streets, paths, bike lanes on
+slower roads, sidewalks — plus a block or less of busier road to reach the next one, and walks count only up to 20 minutes. Standard MEP lets
+a bike use any road but a motorway; on that assumption the score is 7,528 and the drop is **23.0%**.
+About 7 points of that were bike trips along 45-mph roads almost nobody rides.
 
 **What this says:** when you count the cost of people being killed and hurt, Tampa
 Bay is about **a fifth less connected** than the normal MEP score makes it look.
@@ -88,11 +93,11 @@ one with 1,000.
 
 | way of combining | drop |
 |---|---:|
-| weighted by population (**MEP's rule — the one we use**) | **23.4%** |
-| using the higher walking and biking crash costs | 23.5% |
-| plain average, every neighbourhood equal | 24.7% |
+| weighted by population (**MEP's rule — the one we use**) | **16.2%** |
+| using the higher walking and biking crash costs | 16.2% |
+| plain average, every neighbourhood equal | 17.6% |
 
-**What this says:** the answer barely changes (23.4–24.7%), so it doesn't depend on a
+**What this says:** the answer barely changes (16.2–17.6%), so it doesn't depend on a
 lucky choice of method.
 
 **Two warnings:**
@@ -105,11 +110,11 @@ lucky choice of method.
 
 | county | normal | with crash cost | drop |
 |---|---:|---:|---:|
-| Hillsborough | 11,017 | 8,235 | 25.3% |
-| Pinellas | 8,861 | 6,678 | 24.6% |
-| Pasco | 3,569 | 2,887 | **19.1%** |
-| Hernando | 1,339 | 965 | 28.0% |
-| Citrus | 487 | 346 | **29.0%** |
+| Hillsborough | 9,979 | 8,226 | 17.6% |
+| Pinellas | 8,168 | 6,672 | 18.3% |
+| Pasco | 3,310 | 2,885 | **12.8%** |
+| Hernando | 1,216 | 964 | **20.7%** |
+| Citrus | 422 | 345 | 18.1% |
 
 **What this says:**
 - **Hillsborough and Pinellas have the highest scores** — they are cities, with lots of
@@ -122,8 +127,8 @@ lucky choice of method.
 
 | neighbourhood | normal | with crash cost | drop |
 |---|---:|---:|---:|
-| best-connected (in Hillsborough) | 25,095 | 14,214 | **43%** |
-| a middle one (in Hillsborough) | 8,434 | 6,516 | 23% |
+| best-connected (in Hillsborough) | 23,990 | 14,206 | **41%** |
+| a middle one (in Pinellas) | 7,781 | 6,660 | 14% |
 | the lowest | 0 | 0 | — |
 
 **What this says:**
@@ -134,8 +139,8 @@ lucky choice of method.
 
 **Does the order of neighbourhoods change?**
 - **99%** of neighbourhoods move at least one place in the ranking.
-- But the **typical move is only 37 places** out of 2,170.
-- The before and after rankings match **0.989** (1.000 would be identical).
+- But the **typical move is only 36 places** out of 2,170.
+- The before and after rankings match **0.986** (1.000 would be identical).
 
 **What this says:** almost every neighbourhood shifts a little, but the best places stay
 near the top and the worst near the bottom.
@@ -144,9 +149,9 @@ near the top and the worst near the bottom.
 
 | mode | share of the drop |
 |---|---:|
-| **bike** | **76.8%** |
-| car | 18.2% |
-| walk | 5.0% |
+| **bike** | **67.8%** |
+| car | 28.2% |
+| walk | 3.9% |
 | bus | about 0% |
 
 **What this says:** four-fifths of the drop is **cycling**. Part 3 explains why.
@@ -158,11 +163,11 @@ We split neighbourhoods into five equal groups, from fewest to most households
 
 | households without a car | drop |
 |---|---:|
-| fewest | 21.2% |
-| second | 21.3% |
-| middle | 22.1% |
-| fourth | 24.4% |
-| most | **26.2%** |
+| fewest | 14.0% |
+| second | 14.9% |
+| middle | 15.4% |
+| fourth | 17.2% |
+| most | **19.1%** |
 
 **What this says:** neighbourhoods where more people have **no car** lose more — the
 people with the fewest choices are the ones whose access MEP was overstating most.
@@ -217,7 +222,7 @@ Each neighbourhood gets its own driving crash cost, from the roads near it:
 **What this says:** driving in rural Hernando is about **twice as dangerous per mile** as in
 Hillsborough — faster roads, longer distances.
 
-**But:** only **7.0%** of the differences between neighbourhoods' scores come from this
+**But:** only **8.9%** of the differences between neighbourhoods' scores come from this
 local danger. The other **98.7%** comes from **which modes each place relies on**. And
 three-quarters of the local danger is simply **which county you're in**. So this is a
 county-level adjustment, **not a crash-danger map**.
@@ -355,7 +360,7 @@ where people **could** go, not how they **actually** travel. Cycling is **18%** 
 but only **1.8%** of real trips here. So most of the drop removes cycling that people mostly
 don't do. Weighted by real travel, a rough estimate is about **13%**, not 23%.
 
-**2. Not a map of where crashes are worst.** Only 7.0% of the differences between
+**2. Not a map of where crashes are worst.** Only 8.9% of the differences between
 neighbourhoods come from local danger.
 
 **3. Not "cycling is bad" or "people shouldn't cycle".** It means cycling **here** is very
@@ -700,7 +705,7 @@ far places count less.
   there.
 
 Our real region does exactly this, for **2,170** neighbourhoods and all four modes. The result is
-**7,567 → 5,796**, a **23.4%** drop.
+**6,908 → 5,791**, a **16.2%** drop.
 
 ---
 
@@ -829,7 +834,7 @@ crash numbers never changed the order of neighbourhoods.
 maths is the same. The 8 September check proved it was **still** a map of travel habits.
 
 **Second fix — worked, partly:** giving each neighbourhood its **own** driving danger. Now crash data
-differs by place — **but** local danger is only **7.0%** of the differences (1.3% before routes were followed). So it's a regional
+differs by place — **but** local danger is only **8.9%** of the differences (1.3% before routes were followed). So it's a regional
 correction, **not a crash-danger map**.
 
 ## Crash-caused traffic jams (built, then deleted)
@@ -900,10 +905,10 @@ broke — the project just quietly used old data.
 | weak point | what to say |
 |---|---|
 | **MEP counts what you *could* reach, not what people do.** Cycling is 18% of the score but under 2% of trips. | "Most of my correction lands on a mode few people use here. Weighted by real travel it would be roughly half." |
-| **At $10 a mile, cycling is almost switched off**, rather than smoothly penalised. At a tenth of the measured risk, the drop is 13.0% instead of 24.7%. | "Pricing cycling's real risk removes it as an option in MEP." |
+| **At $10 a mile, cycling is almost switched off**, rather than smoothly penalised. At a tenth of the measured risk, the drop is 10.2% instead of 17.6%. | "Pricing cycling's real risk removes it as an option in MEP." |
 | **The local cycling figure rests on 35 surveyed trips.** | "The national figure, on 298 trips, is close." |
 | **Walking, biking and bus danger don't vary by place.** | "I tried; the data isn't strong enough. It needs counts of people walking and biking, which cost money." |
-| **The map is only 7.0% local danger.** | "It's a regional correction, not a crash-danger map." |
+| **The map is only 8.9% local danger.** | "It's a regional correction, not a crash-danger map." |
 | **Who pays when a car hits someone walking?** We charge the person hit. | "It's a choice, and it changes the answer — I show both." |
 | **The bus crash rate is for the whole US.** | "Tampa has too few bus deaths to measure." |
 | **Travel times assume empty roads.** | "Every mode's reach is an upper limit." |
@@ -1054,7 +1059,9 @@ Several fixes often happened together; this is the main reason each time.
 | 9 Sep, afternoon | 25.1–28.1% | switched to MEP's rule: weight by population |
 | 9 Sep, evening | 24.9–27.9% | safety curve refitted on all roads; death share smoothed |
 | **10 Sep – 15 Sep** | **22.5%** | crash-caused traffic jams deleted |
-| **16 Sep onward** | **23.4%** | driving danger follows the real route to each destination |
+| **16 Sep** | **23.4%** | driving danger follows the real route to each destination |
+| **16 Sep** | **16.4%** | bikes and walkers use only low-stress roads plus short hops |
+| **16 Sep onward** | **16.2%** | walks capped at 20 minutes |
 
 On 9 September the raw score also fell from **91,094 to 8,241** when "work" was swapped for
 "restaurants" as the reference place. That changed the size of the score but **not** any percentage.

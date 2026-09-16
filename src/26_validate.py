@@ -45,7 +45,7 @@ import numpy as np
 from scipy.stats import spearmanr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from constants import (ALPHA, BETA, GAMMA, MEP_DEFAULTS,  # noqa: E402
+from constants import (ALPHA, BETA, GAMMA, MEP_DEFAULTS, load_tt,  # noqa: E402
                        DELAY_MINUTES)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -106,9 +106,16 @@ def build():
 
     o = {}
     for m in MODES:
-        T = np.load(INTERIM / f"tt_{m}.npy")
+        T = load_tt(INTERIM, m)
         o[m] = np.array([(T <= b) @ Ow for b in BANDS])
     return geoid, [r["county"] for r in cent], o, n
+
+
+# Route-assigned drive risk by band (step 40), set in main() when present. A
+# rate of the string "route" means "charge each band its own routed rate",
+# exactly as step 23 does, so tests 3-5 report the shipped model to the
+# decimal rather than an approximation of it with one rate per origin.
+ROUTE_BANDS = None
 
 
 def mep(o, n, r, d=0.0, modes=MODES):
@@ -118,8 +125,10 @@ def mep(o, n, r, d=0.0, modes=MODES):
         for bi, b in enumerate(BANDS):
             band = o[m][bi] - (o[m][bi - 1] if bi else 0.0)
             t = b + (d if m in ("drive", "transit") else 0.0)
-            total += band * np.exp(ALPHA * e + BETA * t
-                                   + GAMMA * (c + r.get(m, 0.0)))
+            rate = r.get(m, 0.0)
+            if isinstance(rate, str):
+                rate = ROUTE_BANDS[bi]
+            total += band * np.exp(ALPHA * e + BETA * t + GAMMA * (c + rate))
     return total
 
 
@@ -392,7 +401,7 @@ def main():
         print(f"  {len(sld):,} of {n:,} block groups exist in BOTH vintages "
               f"(EPA is 2018 geography, ours is 2020)")
         for mode, fld in (("drive", "D5AR"), ("transit", "D5BR")):
-            T = np.load(INTERIM / f"tt_{mode}.npy")
+            T = load_tt(INTERIM, mode)
             mine = ((T <= 40) @ work)[sld["i"].values]
             epa = pd.to_numeric(sld[fld], errors="coerce").values
             ok = np.isfinite(epa)
@@ -411,7 +420,13 @@ def main():
     # the scalar to state the closed form; tests 3 to 5 report the numbers that
     # go in the report, and those must match `mep_by_blockgroup.csv` exactly.
     # Without this, the validation reports a model the report does not describe.
-    if r_local is not None:
+    if route_bands is not None:
+        global ROUTE_BANDS
+        ROUTE_BANDS = route_bands
+        real = {**real, "drive": "route"}
+        print("  (tests 3-5 use ROUTE-ASSIGNED drive risk by band, matching "
+              "step 23)\n")
+    elif r_local is not None:
         real = {**real, "drive": r_local}
         print("  (tests 3-5 use the PLACE-VARYING drive rate, matching step 23)\n")
 

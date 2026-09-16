@@ -521,7 +521,7 @@ CSVs are at `github.com/RSGInc/ActivityViz_data/tree/master/data/tampa`.
 35.1%, social 16.3%, meals 10.4%, school 7.1%.
 
 **Why we did not switch to it.** It has no published uncertainty, it does not separate medical from
-shopping, and the MEP drop is 23.3% with it against 23.4% without. See ASSUMPTIONS J1.
+shopping, and the MEP drop is 16.0% with it against 16.2% without. See ASSUMPTIONS J1.
 
 ### BTS Passenger Origin–Destination, 2020–2022
 

@@ -101,7 +101,7 @@ Every idea raised in this project, with **what happened to it** and **why**.
 | 2 | **Break-even exposure** for walking and biking, instead of guessing their miles | 15 Aug | ↩️ | Replaced by measuring walking and biking miles from the 2022 survey |
 | 3 | **Pool the bus rate nationally**, since Tampa had only 2 bus deaths | 15 Aug | ✅ | Kept, then refined to buses-only, collisions-only |
 | 4 | **Tests that check failures**, not just "does it run" | 16 Aug | ✅ | 20 tests now |
-| 5 | A **road-by-road safety model** (safety curve + Empirical Bayes) to make driving danger vary by place | 8 Sep | ✅ | Works; with routes followed (step 40), local danger is 7.0% of the map, up from 1.3% |
+| 5 | A **road-by-road safety model** (safety curve + Empirical Bayes) to make driving danger vary by place | 8 Sep | ✅ | Works; with routes followed (step 40), local danger is 8.9% of the map, up from 1.3% |
 | 6 | Match the **Minnesota study** (Cui & Levinson) before trusting the car crash cost | 15–16 Aug | ✅ | Passes at 1.65× |
 | 7 | Run **NREL's own validation tests** on our version | 9 Sep | ✅ | Passes, plus two extra tests |
 | 8 | A **checker** that compares every number in the documents with the data | 8 Sep | ✅ | Checks 29 report figures plus 10 documents |
@@ -151,7 +151,7 @@ Grouped by reason.
 | Safety curve on crashed roads only | left out quiet roads | all roads |
 | Walking and biking distances from a scratch file | 2.8× and 3.5× too high | survey |
 | Test that couldn't fail | passed on the fake map | a test of the exact formula |
-| "The fake-map problem is solved by our own travel times" | it wasn't | local driving danger (1.3%, then 7.0% once routed) |
+| "The fake-map problem is solved by our own travel times" | it wasn't | local driving danger (1.3%, then 8.9% once routed) |
 
 ### Rejected because it couldn't be defended
 

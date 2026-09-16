@@ -45,7 +45,9 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from constants import (ALPHA, BETA, GAMMA, MEP_DEFAULTS,  # noqa: E402
-                       DELAY_MINUTES)  # noqa: E402
+                       DELAY_MINUTES, SHIPPED_NETWORK, network,  # noqa: E402
+                       tt_file, load_tt, max_minutes,  # noqa: E402
+                       SHIPPED_MAX_MIN)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 INTERIM, FINAL = ROOT / "data" / "interim", ROOT / "data" / "final"
@@ -133,10 +135,10 @@ D_DRIVE = DELAY_MINUTES
 
 
 def load_matrix(mode):
-    p = INTERIM / f"tt_{mode}.npy"
+    p = tt_file(INTERIM, mode)
     if not p.exists():
         sys.exit(f"FAIL: {p.name} missing. Run steps 21 and 22 first.")
-    return np.load(p)
+    return load_tt(INTERIM, mode)
 
 
 def main():
@@ -244,28 +246,19 @@ def main():
 
     # --- Equations 1 and 3 -------------------------------------------------
     tt = {m: load_matrix(m) for m in MODES}
-    # LOW-STRESS BIKE NETWORK, opt-in: MEP_BIKE_NETWORK=lts (step 42). Bike
-    # reach is rebuilt on roads an "interested but concerned" adult will ride,
-    # so the crash term prices cycling access that plausibly exists rather
-    # than access along six-lane arterials. No-write until compared.
-    if os.environ.get("MEP_BIKE_NETWORK") in ("lts", "lts_connect"):
-        p_lts = INTERIM / f"tt_bike_{os.environ['MEP_BIKE_NETWORK']}.npy"
-        if not p_lts.exists():
-            sys.exit("FAIL: MEP_BIKE_NETWORK=lts but tt_bike_lts.npy is "
-                     "missing. Run step 42 first.")
-        tt["bike"] = np.load(p_lts)
-        override = override or "bike_lts"
-        print("\n  *** SENSITIVITY RUN: bike reach on the LOW-STRESS network "
-              "(step 42). NOTHING WILL BE WRITTEN. ***")
-    if os.environ.get("MEP_WALK_NETWORK") == "lts":
-        p_wl = INTERIM / "tt_walk_lts.npy"
-        if not p_wl.exists():
-            sys.exit("FAIL: MEP_WALK_NETWORK=lts but tt_walk_lts.npy is "
-                     "missing. Run step 42 first.")
-        tt["walk"] = np.load(p_wl)
-        override = override or "walk_lts"
-        print("\n  *** SENSITIVITY RUN: walk reach on the LOW-STRESS network "
-              "(step 42). NOTHING WILL BE WRITTEN. ***")
+    # NETWORKS. tt_file() already loaded the shipped network for each mode
+    # (constants.SHIPPED_NETWORK). A run that asks for a different one is a
+    # scenario and writes nothing.
+    for m_ in ("drive", "transit", "walk", "bike"):
+        if max_minutes(m_) != SHIPPED_MAX_MIN[m_]:
+            override = override or f"{m_}_max_min"
+            print(f"\n  *** SENSITIVITY RUN: {m_} trips capped at "
+                  f"{max_minutes(m_):.0f} minutes. NOTHING WILL BE WRITTEN. ***")
+    for m_ in ("bike", "walk"):
+        print(f"\n  {m_} network: {network(m_)}"
+              f"{'' if network(m_) == SHIPPED_NETWORK[m_] else '   (SCENARIO)'}")
+        if network(m_) != SHIPPED_NETWORK[m_]:
+            override = override or f"{m_}_network"
     # o[mode][band] = weighted opportunities reached from each origin
     o = {m: np.zeros((len(BANDS), n)) for m in MODES}
     for m in MODES:

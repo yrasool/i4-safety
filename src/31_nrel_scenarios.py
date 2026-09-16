@@ -38,7 +38,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from constants import ALPHA, BETA, GAMMA, MEP_DEFAULTS  # noqa: E402
+from constants import ALPHA, BETA, GAMMA, MEP_DEFAULTS, load_tt  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 INTERIM, FINAL = ROOT / "data" / "interim", ROOT / "data" / "final"
@@ -74,7 +74,7 @@ def load():
               for r in csv.DictReader(fh)}
     Ow = O @ (np.array([se[a] for a in acts]) * f)
 
-    tt = {m: np.load(INTERIM / f"tt_{m}.npy") for m in MODES}
+    tt = {m: load_tt(INTERIM, m) for m in MODES}
     return n, Ow, tt
 
 

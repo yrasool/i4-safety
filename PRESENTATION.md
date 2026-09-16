@@ -117,7 +117,7 @@ timetables, not an API call."
 
 ## Slide 8 — THE RESULT
 
-> **Pricing crash harm removes 23.4%
+> **Pricing crash harm removes 16.2%
 > of Tampa Bay's accessibility score.**
 >
 > Population-weighted, MEP's own aggregation rule
@@ -152,10 +152,10 @@ Walking has the higher rate but reaches too little to move the total.
 
 > | zero-car households | MEP loss |
 > |---|---:|
-> | fewest | 22.8% |
-> | ↓ | 23.4% |
-> | ↓ | 25.5% |
-> | most | **27.2%** |
+> | fewest | 14.0% |
+> | ↓ | 15.4% |
+> | ↓ | 17.2% |
+> | most | **19.1%** |
 
 **Say:** "The households with no car are the ones left walking, cycling and
 taking the bus. Those are exactly the modes whose cost the metric was hiding."
@@ -207,7 +207,7 @@ presents a clean result they haven't stress-tested.
 
 ## Slide 13 — The limit of the map
 
-> Loss surface is **93.0% mode mix**, 7.0% local crash risk (routed).
+> Loss surface is **91.1% mode mix**, 8.9% local crash risk (routed).
 > County explains 23% of route risk; it explained 77% before routing.
 >
 > **This is not a crash-risk map, and I don't present it as one.**
@@ -216,7 +216,7 @@ presents a clean result they haven't stress-tested.
 algebraically to its mode shares. I proved that and verified it to 6e-16. Four
 numbers cannot make a 2,170-row map. I built place-varying driving risk with a
 safety performance function and Empirical Bayes, and it broke the identity — but
-only by 7.0% of the variance. So I call it a first-order county-scale
+only by 8.9% of the variance. So I call it a first-order county-scale
 correction."
 
 **This slide wins the room.** Almost nobody volunteers the ceiling on their own

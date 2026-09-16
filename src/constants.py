@@ -249,3 +249,62 @@ USER_AGENT = {"User-Agent": "tampa-mep/1.0 (research)"}
 
 # EPA's no-data sentinel. NOT a value.
 NODATA = -99999
+
+# WHICH NETWORK EACH ACTIVE MODE TRAVELS ON - the shipped choice, in one place.
+#
+# Bike: 'lts_connect' since 2026-09-16. Low-stress roads (step 42) plus hops of
+# 250 m or less along higher-stress roads at 3x the time. Standard MEP lets a
+# bike use any road but a motorway; in Tampa Bay that counts reach along
+# 45-mph arterials almost nobody rides, and it was about 7 points of a 23-point
+# headline. 'any' restores standard MEP; 'lts' is the strict version.
+# Walk: 'lts' since 2026-09-16. Low-stress walking - footpaths, local streets at
+# or below 30 mph, and sidewalks beside roads at or below 45 mph - moved the
+# headline by about 0.2 points, but it is what walking in Tampa Bay looks like:
+# nobody walks along an unsidewalked 55-mph rural road. Interstates and other
+# trunk roads were already excluded for walking in step 20.
+#
+# Every step that reads a travel-time matrix goes through tt_file(), so the
+# MEP score, its validation and the NREL scenario checks cannot disagree about
+# which network they ran on - the failure this replaces is three files each
+# hardcoding tt_bike.npy.
+SHIPPED_NETWORK = {"bike": "lts_connect", "walk": "lts"}
+
+
+def network(mode):
+    import os
+    env = os.environ.get(f"MEP_{mode.upper()}_NETWORK", "")
+    return env or SHIPPED_NETWORK.get(mode, "any")
+
+
+# LONGEST TRIP EACH MODE COUNTS, in minutes. MEP's bands run to 40 for every
+# mode. Nobody in Tampa Bay walks 40 minutes to a grocery store or a clinic;
+# FDOT's own South Florida MEP study ran a nonmotorised scenario capped at 20.
+# Override per mode with MEP_<MODE>_MAX_MIN for a scenario run.
+# Walk: 20 since 2026-09-16, the cap FDOT BDV29-977-66 used for its
+# nonmotorised scenario. Moving it from 40 changed the headline by 0.2 points
+# (walking was already 6% of the loss) but it matches how people here walk.
+SHIPPED_MAX_MIN = {"drive": 40, "transit": 40, "walk": 20, "bike": 40}
+
+
+def max_minutes(mode):
+    import os
+    env = os.environ.get(f"MEP_{mode.upper()}_MAX_MIN", "")
+    return float(env) if env else float(SHIPPED_MAX_MIN[mode])
+
+
+def load_tt(interim, mode):
+    """Travel-time matrix on the shipped network, with trips longer than the
+    mode's maximum removed. The only loader any MEP step should use."""
+    import numpy as np
+    T = np.load(tt_file(interim, mode))
+    cap = max_minutes(mode)
+    if cap < 40:
+        T = np.where(T <= cap, T, np.inf).astype(T.dtype)
+    return T
+
+
+def tt_file(interim, mode):
+    net = network(mode)
+    if net == "any":
+        return interim / f"tt_{mode}.npy"
+    return interim / f"tt_{mode}_{net}.npy"
