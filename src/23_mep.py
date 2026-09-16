@@ -244,6 +244,28 @@ def main():
 
     # --- Equations 1 and 3 -------------------------------------------------
     tt = {m: load_matrix(m) for m in MODES}
+    # LOW-STRESS BIKE NETWORK, opt-in: MEP_BIKE_NETWORK=lts (step 42). Bike
+    # reach is rebuilt on roads an "interested but concerned" adult will ride,
+    # so the crash term prices cycling access that plausibly exists rather
+    # than access along six-lane arterials. No-write until compared.
+    if os.environ.get("MEP_BIKE_NETWORK") in ("lts", "lts_connect"):
+        p_lts = INTERIM / f"tt_bike_{os.environ['MEP_BIKE_NETWORK']}.npy"
+        if not p_lts.exists():
+            sys.exit("FAIL: MEP_BIKE_NETWORK=lts but tt_bike_lts.npy is "
+                     "missing. Run step 42 first.")
+        tt["bike"] = np.load(p_lts)
+        override = override or "bike_lts"
+        print("\n  *** SENSITIVITY RUN: bike reach on the LOW-STRESS network "
+              "(step 42). NOTHING WILL BE WRITTEN. ***")
+    if os.environ.get("MEP_WALK_NETWORK") == "lts":
+        p_wl = INTERIM / "tt_walk_lts.npy"
+        if not p_wl.exists():
+            sys.exit("FAIL: MEP_WALK_NETWORK=lts but tt_walk_lts.npy is "
+                     "missing. Run step 42 first.")
+        tt["walk"] = np.load(p_wl)
+        override = override or "walk_lts"
+        print("\n  *** SENSITIVITY RUN: walk reach on the LOW-STRESS network "
+              "(step 42). NOTHING WILL BE WRITTEN. ***")
     # o[mode][band] = weighted opportunities reached from each origin
     o = {m: np.zeros((len(BANDS), n)) for m in MODES}
     for m in MODES:
