@@ -51,7 +51,7 @@ so a data file cannot be added by accident.
 ## How to run it
 
 ```bash
-python src/run_all.py          # all 26 steps, about 30 minutes
+python src/run_all.py          # all 30 steps, about 35 minutes
 python src/28_check_report.py  # check every number in the documents against the data
 python -m pytest tests -q      # 20 tests
 ```

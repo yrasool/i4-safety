@@ -158,7 +158,6 @@ For completeness — found, not corrected:
 | bus times averaged generously | Audit 2 |
 | a severity-matched Minnesota check | Audit 2 |
 | the run-twice check compares only four numbers | Audit 3 |
-| prediction test not in the run list; its "6 of 6" summary | me |
-| steps 37, 38 and 39 are not in the run list either | me |
+| its "6 of 6" summary uses point estimates; three of the six are inside bootstrap noise | me |
 | `23_mep.py` names a file it doesn't make | me |
 | three downloads not saved | me |

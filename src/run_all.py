@@ -89,6 +89,21 @@ STEPS = [
     # derived by nothing. A claim in a document must be produced by a step in
     # the run, or it is not a claim, it is a memory.
     ("35_externality.py", 2, False, False),
+    # 36-39 are CHECKS. They compute nothing the headline depends on; they
+    # exist so that a figure which has drifted fails a run rather than waiting
+    # to be contradicted in a room. Each one is here because of a specific
+    # question a reviewer can ask and this project could not previously answer:
+    #   36  does the model predict, or only fit?      (2019-22 -> 2023-25)
+    #   37  can anyone WITHOUT the licence check it?  (public dashboard)
+    #   38  is this region typical of Florida?        (casualty share vs people)
+    #   39  what does a bus CAUSE, not just suffer?   (step 35 had no bus side)
+    # 36 was written on 14 September and left out of this list for a day, which
+    # is the same omission as 01, 05 and 33 - hence the stale-file detector
+    # below, which now reports any output older than the run that produced it.
+    ("36_holdout.py", 2, False, False),
+    ("37_s4_public_check.py", 1, False, False),
+    ("38_florida_context.py", 1, False, False),
+    ("39_bus_externality.py", 2, False, False),
 ]
 
 
