@@ -433,13 +433,14 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
 | MEP's settings (G1) | passes NREL's tests |
 | traffic-jam minutes (G5) | 24.9% with, 22.5% without |
 | combining neighbourhoods (H1) | 20.6–23.8% depending on method |
+| **trip shares, four sources (D4)** | **settled: 20.3% / 27.0% / 27.2% / 30% work share all give 22.4-22.6%** |
 
 ### Not tested — the open questions
 
 | choice | why it matters |
 |---|---|
 | **same weight for crash dollars and money dollars (B3)** | the biggest untested choice — decides how completely cycling is "switched off" |
-| **what people could reach vs what they do (G3)** | only a rough estimate (~13%) |
+| **what people could reach vs what they do (G3)** | only a rough estimate (~13%); now supported locally - Pinellas Trail survey 2023, 2,391 riders: 69% exercise, 2% to work |
 | **bikes on every road except motorways (E2)** | may overstate cycling's share |
 | no traffic jams (E1) | probably makes the drop bigger — a guess |
 | minor injuries left out (A1) | makes crash cost a lower limit |
@@ -447,6 +448,86 @@ Other files: `MATH.md` (the calculations), `DATA.md` (the sources), `HOW_IT_RUNS
 | state roads only (F1) | direction unknown |
 | near-home road weighting for long trips (F6) | unknown |
 | generous bus averaging (E7) | flatters buses slightly |
-| trip-share uncertainty (D4) | doctor visits rest on 68 trips |
+| trip-share uncertainty (D4) | doctor visits rest on 68 trips - **but the work share is now settled, see below** |
 | Uber/Lyft (G4) | unknown; no reason recorded |
 | population figure gap (C5) | $3,092 vs $3,155 per person |
+
+
+---
+
+## J. Added 15 September 2026
+
+### J1. Trip shares: tested against three local sources, and the question is closed
+
+**The worry.** Our trip frequencies come from **NHTS 2022, South Atlantic large metros** - a
+national survey with no Florida field in 2022. Yusra's objection was direct: Florida drives,
+everything is far apart, and a survey of the whole South Atlantic may not describe Tampa Bay.
+
+**What we found.** The objection is correct on the facts. Three local sources all put the **work**
+trip share near 27%, against the 20.3% we use:
+
+| source | what it is | work share |
+|---|---|---:|
+| NHTS 2022 South Atlantic | national survey, what we ship | 20.3% |
+| BTS Passenger OD 2022 | phone traces, trips inside the Tampa metro | 27.2% |
+| **Tampa Bay Regional Travel Survey** | **FDOT/RSG, 4,565 households, 76,226 trips, our five counties** | **27.0%** |
+| FDOT South Florida study | the MEP tool's 2017 national defaults | 30.0% |
+
+The Tampa survey also gives shopping 35.1% against our 28.1%, social 16.3% against 19.5%, meals
+10.4% against 15.2%, school 7.1% against 13.8%. (It reports medical inside
+"shopping/errands/appointments", so those two were split on our own ratio.)
+
+**What difference it makes: almost none.**
+
+| trip shares used | MEP drop |
+|---|---:|
+| ours, NHTS South Atlantic | -22.5% |
+| Tampa Bay Regional Travel Survey | -22.4% |
+| FDOT South Florida defaults | -22.4% |
+| a deliberately low 15% work share | -22.6% |
+
+**Why.** The drop is set by how dangerous each mode is per mile, not by which destinations people
+are heading to. Changing the destination mix rescales every mode's opportunities together, so the
+ratio between the two scores barely moves.
+
+**How to run it.** `MEP_FREQ_JSON='{"work":0.27033,...}' python src/23_mep.py`. A run with the
+override set **returns before writing**, so a scenario cannot leave its numbers in `data/final/`.
+
+**What we did NOT do.** We did not switch to the Tampa shares. They are a one-off survey with no
+published uncertainty, they do not separate medical from shopping, and the answer does not depend
+on the choice. Switching would trade a documented national source for a local one and change
+nothing - so the honest move is to keep the national source and report the test.
+
+### J2. Static rates: a limitation we had not written down
+
+Our crash cost per mile is a **fixed number per mode**. The safety-in-numbers literature
+(Jacobsen 2003, *Injury Prevention*, and the work after it) finds that injury rates **per cyclist
+fall as cycling grows** - better facilities, and drivers who expect people to be there.
+
+**So the model measures current conditions and cannot score a future with more cycling.** Fed a
+scenario where cycling doubles, it would predict roughly double the harm, which is the wrong sign
+for the second-order effect.
+
+This is a limitation of the method, not a bug, and it was not in any document before today. It
+belongs in the "not tested" list above and in anything spoken from.
+
+### J3. What buses cause, not what their riders suffer
+
+The transit rate in the model ($0.00105 per passenger-mile) is harm to **riders**. Step 35
+computes what **driving causes** to other people but had no equivalent for buses, which is the
+shape of a result that flatters its own argument. Step 39 closes it, locally:
+
+| convention | per passenger-mile |
+|---|---:|
+| car, harm caused to others | $0.0514 |
+| **transit bus, harm caused to others** | **$0.0649** |
+| ratio | **1.26x** |
+
+**Kept out of the headline**, for three reasons: it rests on **three deaths**; per *passenger*-mile
+flatters cars in a low-ridership region, and per *vehicle*-mile would look very different; and it
+describes Tampa Bay's ridership rather than buses in general.
+
+**The first version of this number was wrong** in this project's most familiar way. Counting every
+body-typed bus gave $0.1532 - three times a car - because the numerator held charter coaches,
+hotel shuttles and tour buses while the denominator was HART and PSTA passenger-miles only. A
+denominator that does not cover its own numerator. See CORRECTIONS.md #63.

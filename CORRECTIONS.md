@@ -125,6 +125,24 @@ These moved the main result. In order:
 
 ---
 
+## Part 7 — 15 September 2026
+
+| # | when | what was wrong | how it was found | what we did |
+|---|---|---|---|---|
+| 60 | 15 Sep | **Every casualty figure rested on one licensed file nobody else can open.** Not an error, but a single point of failure with no external check | asking what a reviewer could actually verify | step 37 checks it against Signal Four's **public** dashboard: 3,471 vs 3,526 killed, 20,305 vs 20,526 seriously injured — ratios 0.984 and 0.989, low as expected because our extract stops in November 2025 |
+| 61 | 15 Sep | **Trip shares were national, and Tampa's are different** — the work share here is 27%, not our 20.3% | **your suspicion**, then the Tampa Bay Regional Travel Survey and BTS phone-trace data | tested all four sources: the drop is 22.4–22.6% in every case. Kept the national source and documented the test — see ASSUMPTIONS J1 |
+| 62 | 15 Sep | **No check on whether Tampa Bay is typical of Florida** — the result could be waved away as a local curiosity | asking what an interviewer would attack | step 38: 17.9% of Florida's walking and cycling fatalities on 15.6% of its people, a concentration of 1.15. Cannot separate danger from exposure, and says so |
+| 63 | 15 Sep | **Bus externality of $0.1532 per passenger-mile — three times a car — was wrong.** The numerator counted every bus (charter, shuttle, tour, coach); the denominator was HART and PSTA passenger-miles only | the number looked too bad to be true, so we checked what was in it | narrowed to transit buses (vehicle special function 13, 93% of them in the only two counties with fixed-route service): **$0.0649, 1.26× a car**. Kept out of the headline — it rests on three deaths |
+| 64 | 15 Sep | **Static crash rates were never named as a limitation.** Injury rates per cyclist fall as cycling grows (Jacobsen 2003), so the model cannot score a scenario with more cycling | reading around the "nobody cycles here" objection | written into ASSUMPTIONS J2 and the presentation's limitations slide |
+| 65 | 15 Sep | Claimed the low cycling rate here meant **MEP overstates cycling** — true, but one-sided | the same reading | both sides now stated: cycling is also **suppressed by** the danger being priced, so low uptake is not evidence the mode doesn't matter |
+
+**What 60–63 have in common.** None of them was a wrong calculation. Three were **missing
+checks** — things no reviewer could verify — and one was a **denominator that did not cover its own
+numerator**, which is the fourth time that exact shape has appeared in this project (after the
+8× cost error, the local scaling factor, and the delay term's person-hours over vehicle-miles).
+
+---
+
 ## Part 6 — Raised, but not yet fixed
 
 For completeness — found, not corrected:
@@ -141,5 +159,6 @@ For completeness — found, not corrected:
 | a severity-matched Minnesota check | Audit 2 |
 | the run-twice check compares only four numbers | Audit 3 |
 | prediction test not in the run list; its "6 of 6" summary | me |
+| steps 37, 38 and 39 are not in the run list either | me |
 | `23_mep.py` names a file it doesn't make | me |
 | three downloads not saved | me |

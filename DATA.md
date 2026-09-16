@@ -485,3 +485,80 @@ The crash file contains **vehicle ID numbers (VINs)** and **driver ages**.
 
 **Old files not rebuilt any more** (from the first version, read by nothing): `decision_test.csv`,
 `equity.csv`, `mode_results.csv`, `transit_access.csv`.
+
+
+---
+
+## 9. Sources added 15 September 2026 — checking only
+
+None of these feed the pipeline. Every one exists to test a number that was already computed.
+
+### Signal Four **public** dashboard — signal4analytics.com
+
+**What it is.** The same organisation as our licensed extract, but a free dashboard with no login:
+fatalities and serious injuries by county and year, 2014 to date.
+
+**Why it matters.** Our crash figures came from one licensed file that a reviewer cannot open.
+Anyone can reproduce this dashboard in a browser in two minutes.
+
+**What we took.** Killed and seriously injured, by county, 2014–2026, for all five counties; and
+pedestrian-and-cyclist casualties statewide by year, 2019–2025.
+
+**Result.** Our extract is at **0.984** and **0.989** of the dashboard — slightly low, which is
+right, because our extract stops in November 2025 and the dashboard runs to July 2026. Steps 37
+and 38.
+
+**Caveat.** It is a **snapshot**. The dashboard is revised as reports are filed, so the numbers are
+recorded with their date (2026-09-15) rather than treated as fixed.
+
+### Tampa Bay Regional Travel Survey — ActivityViz
+
+**What it is.** FDOT's own household travel survey for this region, run by RSG. **4,565
+households, 9,099 people, 76,226 trips.** Published as an ActivityViz dashboard; the underlying
+CSVs are at `github.com/RSGInc/ActivityViz_data/tree/master/data/tampa`.
+
+**What we took.** Trip destinations, which give local trip-purpose shares — work 27.0%, shopping
+35.1%, social 16.3%, meals 10.4%, school 7.1%.
+
+**Why we did not switch to it.** It has no published uncertainty, it does not separate medical from
+shopping, and the MEP drop is 22.4% with it against 22.5% without. See ASSUMPTIONS J1.
+
+### BTS Passenger Origin–Destination, 2020–2022
+
+**What it is.** Phone-location trip data, metro to metro, from the Bureau of Transportation
+Statistics. The Tampa metro's own row covers **2.98 billion trips inside the metro**, 97% of all
+trips starting here.
+
+**What we took.** Work share of trips: **19.0%** (2020), **21.0%** (2021), **27.2%** (2022). The
+2020 figure is a lockdown year and the rise afterwards is people returning to offices.
+
+**Limit.** It splits trips only into work and non-work, so it cannot replace a travel survey.
+
+### Pinellas Trail User Survey 2023 — Forward Pinellas
+
+**What it is.** 2,391 responses, run every four to five years by the county's planning agency.
+
+**What it tells us.** Why people ride: **69% exercise, 22% recreation, 3% restaurant, 2% work,
+0.25% school.** This is local evidence for the biggest limitation in the project — that MEP counts
+cycling as access to destinations when most cycling here is not going anywhere.
+
+### Hillsborough County Citizen Survey 2024
+
+**What it is.** 1,300 telephone interviews, pre-stratified to match Census demographics, ±2.72%.
+
+**What it tells us.** Residents rate **pedestrian safety 9.21/10** and **cyclist safety 9.19/10**
+for importance — 2nd and 4th of 23 priorities, above traffic flow and parks. Bicyclist safety rose
+from 8.77 in 2021, the second-largest rise of anything measured. It answers "why should an
+accessibility metric care about this?"
+
+### Looked at and not used
+
+| source | why not |
+|---|---|
+| NREL TSDC household travel data | the Tampa Bay survey in it is from **1996** |
+| PSRC household travel survey | Seattle, not Florida — useful only as a future comparison region |
+| League of American Bicyclists city data | big cities only, no Tampa; and it is ACS commute data we already have |
+| FDOT county highway maps (6 PDFs) | map images, no extractable data |
+| `fti_2025.mdb` (FDOT traffic counts) | 1,860 count sites in our counties, but 2025 only — duplicates AADT we already hold |
+| City/County road mileage 1992–2025 | background context, no role in any calculation |
+| floridacyclinglaw.com blog | a law firm's summary; the underlying idea (safety in numbers) was taken to Jacobsen 2003 instead |
