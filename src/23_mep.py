@@ -455,15 +455,16 @@ def main():
         print(f"  {c:<15}{base[m].mean():>11,.1f}{lo[m].mean():>12,.1f}"
               f"{lo[m].mean()/base[m].mean()-1:>+9.1%}")
 
+    dump = os.environ.get("MEP_DUMP")
+    if dump:
+        # per-origin arrays for comparing scenarios, written ONLY to the path
+        # given - never into data/, so the report cannot read them. Allowed on
+        # the shipped run too, so a comparison can include the baseline.
+        np.savez(dump, base=base, lo=lo, geoid=np.array(geoid),
+                 county=np.array(county),
+                 pop=pop if pop is not None else np.zeros(n))
+        print(f"\n  scenario arrays dumped to {dump}")
     if override:
-        dump = os.environ.get("MEP_DUMP")
-        if dump:
-            # per-origin arrays for comparing scenarios, written ONLY to the
-            # path given - never into data/, so the report cannot read them
-            np.savez(dump, base=base, lo=lo, geoid=np.array(geoid),
-                     county=np.array(county),
-                     pop=pop if pop is not None else np.zeros(n))
-            print(f"\n  scenario arrays dumped to {dump}")
         print("\nSENSITIVITY RUN - mep_by_blockgroup.csv NOT written, so the "
               "real result in data/final/ is untouched.")
         return
