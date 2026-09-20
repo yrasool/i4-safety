@@ -86,7 +86,6 @@ STEPS = [
     ("23_mep.py", 2, False, False),
     ("26_validate.py", 3, False, False),
     ("27_equity.py", 1, False, False),
-    ("28_check_report.py", 1, False, False),
     # 31 WAS MISSING TOO. It is the only check that this build behaves like
     # MEP at all - NREL's own published validation scenarios. A pipeline that
     # never runs it can drift into not-MEP silently.
@@ -120,7 +119,29 @@ STEPS = [
     # 43 measures the low-stress islands and splits the result by county,
     # running step 23 three ways; it reads 42's graphs and 23's inputs.
     ("43_bike_islands.py", 6, False, True),
+    # 46 and 47 exist because two quoted figures were produced by no script.
+    # The version B headline sat on a slide at 8.2% and survived the move from
+    # 16.2% to 13.4% unchanged, because nothing recomputed it. The bike
+    # bracket came from shell runs with MEP_BIKE_NETWORK set by hand. A number
+    # no step writes cannot go stale - it just stops being true.
+    ("46_version_b_headline.py", 2, False, False),
+    ("47_bike_network_bracket.py", 6, False, True),
+    # 28 IS LAST, AND MUST STAY LAST. It recomputes every published figure
+    # from the CSVs and writes nothing any step reads, so it is a verifier,
+    # not a producer. Run before 34, 35, 43, 46 or 47 it checks figures those
+    # steps have not written yet - which is how it once passed while checking
+    # a file that did not exist.
+    ("28_check_report.py", 1, False, False),
 ]
+
+# Asserted rather than commented, because the ordering above has been broken
+# three times: 33 before 29, the 30/33 geometry cycle, and 28 before 34. Each
+# survived only because a stale file sat on disk from an earlier manual run.
+_names = [x[0] for x in STEPS]
+assert _names[-1] == "28_check_report.py", "28_check_report.py must run last"
+for _p in ("34_exposure_by_year.py", "35_externality.py", "43_bike_islands.py",
+           "46_version_b_headline.py", "47_bike_network_bracket.py"):
+    assert _names.index(_p) < _names.index("28_check_report.py"),         f"{_p} writes a figure 28 checks, so it must run before 28"
 
 
 def headline():

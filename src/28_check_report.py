@@ -120,6 +120,26 @@ def main():
                 return float(r["value"])
         sys.exit(f"FAIL: externality.csv has no {metric}/{mode}. Rerun 35.")
 
+    # Step 46. The version B headline was quoted for weeks with no code
+    # behind it, which is why it survived the move from 16.2% to 13.4%
+    # unchanged. It is checked here so that cannot recur.
+    vb_path = FINAL / "version_b_headline.csv"
+    if not vb_path.exists():
+        sys.exit("FAIL: version_b_headline.csv missing. Run step 46.")
+    vb = {r["metric"]: float(r["value"]) for r in rows(vb_path)}
+
+    # Step 47. Same reason: every bracket figure used to come from a shell run
+    # with MEP_BIKE_NETWORK set by hand.
+    br_path = FINAL / "bike_network_bracket.csv"
+    if not br_path.exists():
+        sys.exit("FAIL: bike_network_bracket.csv missing. Run step 47.")
+    br = {r["network"]: r for r in rows(br_path)}
+
+    def bdrop(net):
+        if net not in br:
+            sys.exit(f"FAIL: bike_network_bracket.csv has no {net}. Rerun 47.")
+        return abs(float(br[net]["drop"]))
+
     checks = [
         ("total deaths", f"{K:,}", r"deaths|total"),
         ("total serious injuries", f"{A:,}", r"serious|total"),
@@ -128,6 +148,13 @@ def main():
         ("ped and cyclist share of deaths", f"{nonmotor:.1%}",
          r"pedestrian|cyclist"),
         ("r_drive", f"${r_drive:.4f}", r"r_drive|passenger-mile"),
+        ("version B headline", f"{abs(vb['version_b_drop']):.1%}",
+         r"charged to the driver|version B|convention B"),
+        ("bike bracket, any road", f"{bdrop('any'):.1%}", r"any road"),
+        ("bike bracket, strictly low-stress", f"{bdrop('lts'):.1%}",
+         r"strictly low-stress|low-stress roads it is"),
+        ("bike bracket, NREL's own method", f"{bdrop('lts_nrel'):.1%}",
+         r"NREL|slowed by band"),
         ("crash term vs driving cost, KSI", f"{share_d:.1%}",
          r"charges driving|share of what MEP"),
         ("crash term vs transit cost", f"{share_t:.2%}",

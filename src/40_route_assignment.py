@@ -81,6 +81,16 @@ ROOT = Path(__file__).resolve().parents[1]
 INTERIM = ROOT / "data" / "interim"
 FINAL = ROOT / "data" / "final"
 RAW = ROOT / "data" / "raw"
+
+# SCENARIO HOOKS. A safety programme changes segment rates and nothing else,
+# so the scenario is this step rerun on a different segment file writing to a
+# different name. Both default to the shipped values, so an ordinary run is
+# unaffected and a scenario can never overwrite the shipped route surface.
+import os  # noqa: E402
+SEG_FILE = FINAL / os.environ.get("MEP_SEGMENT_FILE", "segment_eb.csv")
+TAG = os.environ.get("MEP_ROUTE_TAG", "")
+OD_OUT = INTERIM / f"route_risk_od{TAG}.npy"
+BY_ORIGIN_OUT = FINAL / f"route_risk_by_origin{TAG}.csv"
 RCI = "https://gis.fdot.gov/arcgis/rest/services/RCI_Layers/FeatureServer/0"
 COUNTY_DOT = ("10", "15", "14", "08", "02")
 PATH_CACHE = RAW / "fdot_segment_paths.json"
@@ -135,7 +145,8 @@ def main():
     t0 = time.time()
 
     # ---- segments and their polylines -----------------------------------
-    segs = read_csv(FINAL / "segment_eb.csv")
+    segs = read_csv(SEG_FILE)
+    print(f"  segment rates from {SEG_FILE.name}")
     print(f"{len(segs):,} segments with Empirical Bayes rates")
     paths = fetch_paths()
 
@@ -292,7 +303,7 @@ def main():
               f"{np.median(S[:8][k]):.1%}")
         return
 
-    np.save(INTERIM / "route_risk_od.npy", R)
+    np.save(OD_OUT, R)
 
     # ---- opportunity weights, exactly as step 23 builds them -------------
     opp = read_csv(INTERIM / "opportunities.csv")
@@ -353,7 +364,7 @@ def main():
           f"{np.median(overall[both] / px[both]):.2f}")
 
     FINAL.mkdir(parents=True, exist_ok=True)
-    with (FINAL / "route_risk_by_origin.csv").open("w", newline="",
+    with BY_ORIGIN_OUT.open("w", newline="",
                                                    encoding="utf8") as fh:
         wtr = csv.writer(fh)
         wtr.writerow(["GEOID20", "county", "r_route", "r_band10", "r_band20",
@@ -365,7 +376,7 @@ def main():
         for i, c in enumerate(cent):
             wtr.writerow([c["GEOID20"], c["county"], fmt(overall[i])]
                          + [fmt(pb[i]) for pb in per_band] + [fmt(px[i])])
-    print(f"\nwrote {FINAL / 'route_risk_by_origin.csv'}   "
+    print(f"\nwrote {BY_ORIGIN_OUT}   "
           f"({(time.time() - t0) / 60:.1f} min)")
 
 

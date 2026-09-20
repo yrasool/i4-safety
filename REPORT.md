@@ -191,6 +191,13 @@ only 1.4% of its own rate and nearly all of that harm becomes driving's. Anyone
 preferring B can take the externality figure above and reassign it; no other
 part of the pipeline changes.
 
+**Run both** (step 46, `version_b_headline.csv`):
+the headline is **13.4%** under version A and **8.2%** under version B. Under B, 93.5% of the loss sits on driving, which is
+why the bike network fix moved A by 2.8 points and left B where it was. Version
+A's drive risk varies by route and version B's is a regional rate, so the
+routed bands are scaled rather than flattened: quote B as version A's geography
+at version B's price.
+
 **Each version checks against its own published benchmark.** Cui & Levinson
 split safety cost into internal and external for precisely this reason:
 
@@ -480,6 +487,30 @@ high-stress road PER OSM WAY, not per junction-to-junction fragment, and walk re
 up to 20 minutes, the nonmotorised cap FDOT's South Florida study used
 (steps 41-43; ASSUMPTIONS section L). With bikes allowed on any road but a motorway, as standard MEP
 assumes, the published score is 7,528.4 and the drop is 23.0%; on strictly low-stress roads it is 10.9%.
+
+**All five networks, computed rather than remembered** (step 47,
+`bike_network_bracket.csv`):
+
+| bike network | published | with harm | drop |
+|---|---:|---:|---:|
+| bikes on any road but a motorway | 7,528.4 | 5,796.0 | 23.0% |
+| NREL's own method, nothing deleted, slowed by band | 7,227.6 | 5,793.5 | 19.8% |
+| 250 m crossing, per fragment *(retired bug)* | 6,908.2 | 5,790.9 | 16.2% |
+| **250 m crossing, per OSM way** | **6,682.7** | **5,789.0** | **13.4%** |
+| strictly low-stress, no crossings | 6,495.2 | 5,787.5 | 10.9% |
+
+**Read the second and third columns together.** The published scores span 1,033
+points; the scores after crash harm is priced span 8.5, a range of 0.15%. The
+bike network choice barely changes how much access SURVIVES the safety term -
+it changes how much was CLAIMED before it. Extra bike reach is almost exactly
+cancelled by the harm of using it.
+
+Note also the direction: the strictest network gives the SMALLEST loss, and
+NREL's most permissive one gives a larger loss than this project's. MEP prices
+harm per passenger-mile, so a network that reaches less carries fewer miles and
+less harm. That means this term can be reduced by shrinking the network, which
+is a property of the method rather than a result, and is stated here rather
+than left to be found.
 
 Unweighted mean of block groups, for comparison only:
 

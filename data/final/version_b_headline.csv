@@ -1,0 +1,8 @@
+metric,value
+base_population_weighted,6682.7317
+version_a_score,5789.0220
+version_a_drop,-0.133734
+version_b_score,6132.6273
+version_b_drop,-0.082317
+b_over_a,0.6155
+drive_rate_scale,1.484989

@@ -1,0 +1,5 @@
+scenario,segments_fixed,mep,loss,points_recovered,miles_treated,ksi_per_year_avoided
+today,0,5789.0220,-0.133734,0,0,0
+fix_worst_50,50,5805.5089,-0.131267,0.2467,172.3,169.3
+fix_worst_200,200,5834.0257,-0.127000,0.6734,571.5,346.1
+fix_worst_500,500,5860.5616,-0.123029,1.0705,1078.6,488.5

@@ -52,6 +52,7 @@ OSM = ROOT / "data" / "raw" / "osm"
 LTS_TILES = ROOT / "data" / "raw" / "osm_lts"
 FDOT = ROOT / "data" / "raw" / "fdot_bikeped" / "bike_lane_tda_d7.geojson"
 OUT = ROOT / "data" / "final" / "fdot_bike_check.csv"
+GAP_OUT = ROOT / "data" / "interim" / "fdot_lane_gap_ways.txt"
 
 DENSIFY_M = 10.0        # spacing of FDOT sample points
 TOL_M = 25.0            # how far an OSM segment may sit from an FDOT lane
@@ -148,7 +149,7 @@ def compare(tree, fbrs, tags):
     tiles = sorted(OSM.glob("tile_*.json.gz"))
     if not tiles:
         sys.exit("FAIL: no OSM tiles. Run 19_fetch_osm.py first.")
-    seen = set()
+    seen, gap = set(), set()
     m = {(a, b): 0.0
          for a in ("protected", "painted", "none")
          for b in ("lane", "no lane")}
@@ -181,7 +182,19 @@ def compare(tree, fbrs, tags):
                         hit = True
                         break
                 m[(osm, "lane" if hit else "no lane")] += d / 1609.344
+                if osm == "none" and hit:
+                    gap.add(fp)
     print(f"  major OSM ways compared: {len(seen):,}")
+    print(f"  ways FDOT records a lane on and OSM does not tag: {len(gap):,}")
+    # WRITTEN SO THE SCENARIO CAN USE IT. These are the ways where the state
+    # says a bike lane exists and the tag is missing, which is the difference
+    # between step 42 calling the road high stress and low stress. Step 42
+    # reads this file to build the `lts_fdot` network.
+    GAP_OUT.parent.mkdir(parents=True, exist_ok=True)
+    with GAP_OUT.open("w", encoding="utf8") as fh:
+        for f in sorted(gap):
+            fh.write(f"{f}\n")
+    print(f"  wrote {GAP_OUT.name}")
     return m
 
 

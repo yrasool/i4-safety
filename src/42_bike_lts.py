@@ -53,6 +53,7 @@ import csv
 import gzip
 import importlib.util
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -73,7 +74,13 @@ spec.loader.exec_module(s20)
 MAX_MIN = 40
 CHUNK = 64
 MAX_SNAP_M = 2_000
-CONNECTOR_M = 250.0     # about one suburban block
+# About one suburban block. Overridable with MEP_CONNECTOR_M for a sensitivity
+# run; the shipped value is 250. Note what this number MEANS: how far a rider
+# will tolerate an UNPROTECTED high-stress road to reach the next calm street.
+# It is not the length of a protected cycleway someone might build - a
+# protected facility would change the road's LTS class, not buy a tolerated
+# crossing of it.
+CONNECTOR_M = float(os.environ.get("MEP_CONNECTOR_M", 250.0))
 CONNECTOR_SLOW = 3.0    # time multiplier on those short stretches
 # FLORIDA STATUTORY DEFAULTS for roads with no posted speed in OSM.
 # s.316.183 F.S.: 30 mph in business or residence districts, 55 mph
@@ -100,6 +107,20 @@ def fingerprint(c):
     # identical to step 20's tile-boundary dedupe key
     return hash((len(c), c[0][0], c[0][1], c[-1][0], c[-1][1],
                  c[len(c) // 2][0], c[len(c) // 2][1]))
+
+
+GAP_FILE = INTERIM / "fdot_lane_gap_ways.txt"
+
+
+def load_fdot_gap():
+    """OSM ways FDOT records a bike lane on that OSM does not tag (step 45).
+
+    Empty when step 45 has not run, which makes the scenario below a no-op
+    rather than a silent half-answer.
+    """
+    if not GAP_FILE.exists():
+        return set()
+    return {int(x) for x in GAP_FILE.read_text(encoding="utf8").split()}
 
 
 def load_lts_tags():
@@ -154,6 +175,48 @@ def classify(hw, speed, t):
             return (sp <= 35 and ln <= 4), "major, painted lane"
         return (sp <= 25 and ln <= 2), "major, mixed traffic"
     return False, "other"
+
+
+def lts_level(hw, speed, t):
+    """LTS 1-4 for NREL's variant, from Sharda et al. 2024 Table 2.
+
+    classify() above answers a yes/no - is this low stress - because the
+    shipped network either keeps an edge or deletes it. NREL keeps every edge
+    and slows it by BAND, so their version needs the band itself. Same inputs,
+    same tags, different output shape.
+
+    Their table is keyed on speed x facility (and on direction, which is not
+    carried here, so the bi-directional column is used - the stricter of the
+    two).
+    """
+    if hw in EXCLUDED:
+        return None
+    if hw in PATHS:
+        if (t or {}).get("bicycle") == "no":
+            return None
+        return 1
+    if hw in LOCAL:
+        sp = speed if np.isfinite(speed) else 25.0
+        return 1 if sp <= 30 else 2
+    if hw not in MAJOR_SPEED:
+        return None
+    sp = speed if np.isfinite(speed) else float(MAJOR_SPEED[hw])
+    cw = {str((t or {}).get(k, "")).lower() for k in
+          ("cycleway", "cycleway:both", "cycleway:left", "cycleway:right")}
+    if cw & {"track", "separate"}:
+        return 1                      # separated: LTS 1 at any speed
+    lane = "lane" in cw
+    if sp <= 25:
+        return 1 if lane else 2
+    if sp <= 30:
+        return 1 if lane else 3
+    if sp <= 35:
+        return 2 if lane else 3
+    if sp <= 40:
+        return 3
+    if sp <= 45:
+        return 4 if lane else 4
+    return 4
 
 
 def classify_walk(hw, speed, t):
@@ -226,7 +289,8 @@ def main():
 
     # ---- pass 2 with stress ---------------------------------------------
     U, V, L, LOW, BIKE_OK, WALK_OK, WLOW = [], [], [], [], [], [], []
-    WAY = []
+    WAY, LTSL, FDOTLOW = [], [], []
+    gapset = load_fdot_gap()
     reasons, wreasons = {}, {}
     major_seen = major_matched = 0
     for way_i, w in enumerate(s20.iter_ways()):
@@ -254,6 +318,13 @@ def main():
             t = tags.get(fingerprint(w["c"]))
             major_matched += t is not None
         low, why = classify(hw, sp if sp else np.nan, t)
+        lvl = lts_level(hw, sp if sp else np.nan, t)
+        # would a painted lane here pass classify()'s own test?
+        fp_w = fingerprint(w["c"])
+        gap_low = False
+        if fp_w in gapset and hw in MAJOR_SPEED:
+            spd = sp if sp else float(MAJOR_SPEED[hw])
+            gap_low = spd <= 35 and lanes_of(t or {}, hw) <= 4
         bike_ok = hw not in s20.NO_BIKE
         low = low and bike_ok
         walk_ok = hw not in s20.NO_FOOT
@@ -267,6 +338,8 @@ def main():
             V.append(idx_of[int(k[b])])
             L.append(d)
             WAY.append(way_i)
+            LTSL.append(lvl if lvl else 0)
+            FDOTLOW.append(gap_low and bike_ok)
             LOW.append(low)
             BIKE_OK.append(bike_ok)
             WALK_OK.append(walk_ok)
@@ -283,6 +356,8 @@ def main():
     L = np.asarray(L, np.float64)
     LOW = np.asarray(LOW, bool)
     WAY = np.asarray(WAY, np.int64)
+    LTSL = np.asarray(LTSL, np.int8)
+    FDOTLOW = np.asarray(FDOTLOW, bool)
     print(f"\n  untagged local streets given statutory speeds: "
           f"{urban_mi:,.0f} mi at {URBAN_MPH:.0f} mph (urban), "
           f"{rural_mi:,.0f} mi at {RURAL_MPH:.0f} mph (rural)")
@@ -405,6 +480,75 @@ def main():
           f"that passed per-edge are fragments of longer high-stress ways")
     build("bike", BIKE_MPH, BIKE_OK, LOW | connector_way, reasons,
           tag="lts_connect_byway", time_mult=mult_way)
+
+    # FDOT-INVENTORY SCENARIO, not shipped. Step 45 found that OSM tags only
+    # 50.2% of the bike-lane miles FDOT's Roadway Characteristics Inventory
+    # records in District 7 - 801 major-road miles where the state says a lane
+    # exists and the tag is missing. Step 42 calls those roads high stress for
+    # want of a tag. This network asks what the answer would be if OSM matched
+    # the state's own records.
+    #
+    # FDOTLOW is built in the parse loop above, where the speed and lane counts
+    # already are: a gap way becomes low stress only if it ALSO passes the
+    # painted-lane test classify() applies - 35 mph or under, four lanes or
+    # fewer. A blanket pass would be a different and much weaker claim.
+    #
+    # TWO READINGS, and they differ. As a data correction it says how wrong the
+    # shipped input is. As an infrastructure scenario it says what striping
+    # those lanes would buy. The first is the defensible one: FDOT says the
+    # lanes are already there.
+    if FDOTLOW.any():
+        fdot_low = LOW | FDOTLOW
+        print(f"\n  FDOT-inventory scenario: {FDOTLOW.sum():,} edges "
+              f"({L[FDOTLOW].sum() / 1609.344:,.0f} miles) the state records a "
+              f"lane on become low stress, on top of the "
+              f"{L[LOW].sum() / 1609.344:,.0f} already low-stress miles")
+        hs_f = BIKE_OK & ~fdot_low
+        way_hs_f = np.bincount(WAY[hs_f], weights=L[hs_f],
+                               minlength=int(WAY.max()) + 1)
+        conn_f = hs_f & (way_hs_f[WAY] <= CONNECTOR_M)
+        build("bike", BIKE_MPH, BIKE_OK, fdot_low | conn_f, reasons,
+              tag="lts_fdot", time_mult=np.where(conn_f, CONNECTOR_SLOW, 1.0))
+    else:
+        print("\n  FDOT-inventory scenario SKIPPED: run 45_fdot_bike_check.py "
+              "first to write fdot_lane_gap_ways.txt")
+
+    # HALF-MILE VARIANT, for the bracket and not shipped. A 2026 micromobility
+    # note argued for a 0.5-mile PROTECTED cycleway across a high-stress
+    # barrier, and the obvious question is whether CONNECTOR_M should be that
+    # instead of 250 m. It should not: a protected facility changes the road's
+    # LTS CLASS, so it needs no connector at all, while CONNECTOR_M buys a
+    # crossing of an UNPROTECTED road. Half a mile is eight blocks, about two
+    # and a half minutes riding in traffic at 12 mph - that is using an
+    # arterial, not crossing one. Built anyway, at a FIXED 0.5 mile regardless
+    # of MEP_CONNECTOR_M, so the bracket row does not move when someone runs a
+    # sensitivity on the shipped value.
+    HALF_MILE_M = 804.672
+    way_hs_h = np.bincount(WAY[hs], weights=L[hs], minlength=int(WAY.max()) + 1)
+    connector_half = hs & (way_hs_h[WAY] <= HALF_MILE_M)
+    mult_half = np.where(connector_half, CONNECTOR_SLOW, 1.0)
+    print(f"\n  half-mile variant: {connector_half.sum():,} high-stress edges "
+          f"allowed ({L[connector_half].sum() / 1609.344:,.0f} miles) against "
+          f"{L[connector_way].sum() / 1609.344:,.0f} at the shipped "
+          f"{CONNECTOR_M:.0f} m")
+    build("bike", BIKE_MPH, BIKE_OK, LOW | connector_half, reasons,
+          tag="lts_connect_halfmile", time_mult=mult_half)
+
+    # NREL'S OWN VARIANT, for comparison and not shipped. Sharda et al. 2024
+    # keep every bikeable edge and PENALISE TRAVERSAL TIME by stress band -
+    # LTS 1 free, LTS 2 +10%, LTS 3 +30%, LTS 4 +60% - so a route may still use
+    # an arterial when nothing else connects, instead of the network breaking
+    # into islands. This project deletes those edges instead. Running both is
+    # the only way to say what that choice is worth rather than argue it.
+    PEN = {0: 1.0, 1: 1.0, 2: 1.10, 3: 1.30, 4: 1.60}
+    mult_nrel = np.vectorize(PEN.get)(LTSL).astype(np.float64)
+    nrel_ok = BIKE_OK & (LTSL > 0)
+    print("\n  NREL variant: every bikeable edge kept, slowed by band")
+    for lv in (1, 2, 3, 4):
+        m = nrel_ok & (LTSL == lv)
+        print(f"    LTS {lv}  x{PEN[lv]:.2f}  {L[m].sum() / 1609.344:>9,.0f} mi")
+    build("bike", BIKE_MPH, nrel_ok, nrel_ok, reasons,
+          tag="lts_nrel", time_mult=mult_nrel)
 
     build("walk", s20.WALK_MPH, WALK_OK, WLOW, wreasons)
 

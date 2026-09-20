@@ -1,0 +1,6 @@
+network,description,published_score,score_with_harm,drop,median_40min_weighted_opps
+any,bikes on any road but a motorway,7528.3600,5796.0069,-0.230110,12035.2
+lts,"strictly low-stress, no crossings",6495.1580,5787.4726,-0.108956,169.9
+lts_connect,"250 m crossing, per fragment  [retired bug]",6908.1620,5790.8840,-0.161733,4570.0
+lts_connect_byway,"250 m crossing, per OSM way  [SHIPPED]",6682.7317,5789.0220,-0.133734,953.8
+lts_nrel,"NREL: nothing deleted, slowed by band",7227.5856,5793.5225,-0.198415,8485.7
