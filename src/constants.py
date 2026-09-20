@@ -267,7 +267,13 @@ NODATA = -99999
 # MEP score, its validation and the NREL scenario checks cannot disagree about
 # which network they ran on - the failure this replaces is three files each
 # hardcoding tt_bike.npy.
-SHIPPED_NETWORK = {"bike": "lts_connect", "walk": "lts"}
+# Bike: 'lts_connect_byway' since 2026-09-20. The 250 m connector was tested
+# per junction-to-junction FRAGMENT, so an arterial split into nine 200 m
+# pieces passed nine separate times and a continuous 1,800 m high-stress ride
+# entered the network as nine legal one-block hops. 11,239 of the 21,788
+# connector miles were fragments of longer high-stress ways. Spending the
+# budget once per OSM way moved the headline from 16.2% to 13.4%.
+SHIPPED_NETWORK = {"bike": "lts_connect_byway", "walk": "lts"}
 
 
 def network(mode):

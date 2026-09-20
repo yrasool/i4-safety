@@ -118,6 +118,17 @@ def build():
 ROUTE_BANDS = None
 
 
+def wmean(x, pop):
+    """Population-weighted mean - MEP's own aggregation rule.
+
+    `.mean()` gives every block group equal say, so a 40-person tract
+    counts as much as downtown Tampa. Steps 23 and 43 both weight by
+    population; this file did not, which is why the attribution shares
+    below disagreed with the headline they were printed beside.
+    """
+    return float(np.sum(x * pop) / np.sum(pop))
+
+
 def mep(o, n, r, d=0.0, modes=MODES):
     total = np.zeros(n)
     for m in modes:
@@ -138,6 +149,9 @@ def rank(x):
 
 def main():
     geoid, county, o, n = build()
+    with (INTERIM / "acs_blockgroups.csv").open(encoding="utf8") as fh:
+        popmap = {r["GEOID20"]: float(r["pop"]) for r in csv.DictReader(fh)}
+    pop = np.array([popmap.get(g, 0.0) for g in geoid])
     r_drive, R_TRANSIT, R_WALK, R_BIKE = read_rates()
     base = mep(o, n, {})
     real = {"drive": r_drive, "transit": R_TRANSIT,
@@ -431,14 +445,16 @@ def main():
         print("  (tests 3-5 use the PLACE-VARYING drive rate, matching step 23)\n")
 
     full = mep(o, n, real)
-    drop = base.mean() - full.mean()
-    print(f"  MEP falls {drop / base.mean():.1%}.  Attributed by mode:\n")
+    base_w = wmean(base, pop)
+    drop = base_w - wmean(full, pop)
+    print(f"  MEP falls {drop / base_w:.1%}.  Attributed by mode:\n")
     print(f"    {'mode':<10}{'alone':>10}{'share of drop':>16}"
           f"{'40-min reach':>15}")
     for m in MODES:
         only = mep(o, n, {m: real[m]})
-        share = (base.mean() - only.mean()) / drop
-        print(f"    {m:<10}{(only.mean()/base.mean()-1):>+10.1%}"
+        only_w = wmean(only, pop)
+        share = (base_w - only_w) / drop
+        print(f"    {m:<10}{(only_w / base_w - 1):>+10.1%}"
               f"{share:>16.1%}{np.median(o[m][-1]):>15,.0f}")
         out.append({"test": "attribution", "case": m, "spearman": "",
                     "value": round(share, 6)})

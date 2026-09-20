@@ -226,9 +226,10 @@ def main():
 
     # ---- pass 2 with stress ---------------------------------------------
     U, V, L, LOW, BIKE_OK, WALK_OK, WLOW = [], [], [], [], [], [], []
+    WAY = []
     reasons, wreasons = {}, {}
     major_seen = major_matched = 0
-    for w in s20.iter_ways():
+    for way_i, w in enumerate(s20.iter_ways()):
         hw = w["h"]
         c = np.asarray(w["c"], dtype=np.float64)
         k = s20.pack(c[:, 0], c[:, 1])
@@ -265,6 +266,7 @@ def main():
             U.append(idx_of[int(k[a])])
             V.append(idx_of[int(k[b])])
             L.append(d)
+            WAY.append(way_i)
             LOW.append(low)
             BIKE_OK.append(bike_ok)
             WALK_OK.append(walk_ok)
@@ -280,6 +282,7 @@ def main():
     V = np.asarray(V, np.int32)
     L = np.asarray(L, np.float64)
     LOW = np.asarray(LOW, bool)
+    WAY = np.asarray(WAY, np.int64)
     print(f"\n  untagged local streets given statutory speeds: "
           f"{urban_mi:,.0f} mi at {URBAN_MPH:.0f} mph (urban), "
           f"{rural_mi:,.0f} mi at {RURAL_MPH:.0f} mph (rural)")
@@ -384,6 +387,25 @@ def main():
           f"{CONNECTOR_SLOW:.0f}x travel time")
     build("bike", BIKE_MPH, BIKE_OK, LOW | connector, reasons,
           tag="lts_connect", time_mult=mult)
+
+    # CORRECTED VARIANT. The test above is applied to each junction-to-junction
+    # FRAGMENT, but CONNECTOR_M is meant to buy about one block. An arterial
+    # split into nine 200 m fragments passes the test nine separate times, so a
+    # continuous 1,800 m high-stress ride enters the network as nine legal
+    # "one-block" hops. Grouping by OSM way spends the 250 m budget once per
+    # way, against that way's whole high-stress length.
+    hs = BIKE_OK & ~LOW
+    way_hs = np.bincount(WAY[hs], weights=L[hs], minlength=int(WAY.max()) + 1)
+    connector_way = hs & (way_hs[WAY] <= CONNECTOR_M)
+    mult_way = np.where(connector_way, CONNECTOR_SLOW, 1.0)
+    dropped = connector & ~connector_way
+    print(f"\n  by-way variant: {connector_way.sum():,} short high-stress edges "
+          f"allowed ({L[connector_way].sum() / 1609.344:,.0f} miles); "
+          f"{dropped.sum():,} edges ({L[dropped].sum() / 1609.344:,.0f} miles) "
+          f"that passed per-edge are fragments of longer high-stress ways")
+    build("bike", BIKE_MPH, BIKE_OK, LOW | connector_way, reasons,
+          tag="lts_connect_byway", time_mult=mult_way)
+
     build("walk", s20.WALK_MPH, WALK_OK, WLOW, wreasons)
 
     FINAL.mkdir(parents=True, exist_ok=True)

@@ -22,14 +22,14 @@ This report computes MEP for 2,170 block groups from primary data, then adds
 crash harm to the term MEP already uses for dollars. Nothing else changes: no
 new equation, no new weight.
 
-**Pricing crash harm removes 16.2% of Tampa Bay's accessibility
+**Pricing crash harm removes 13.4% of Tampa Bay's accessibility
 score.**
 
 That is on MEP's own aggregation rule: Hou et al. (2019) p.9, "the population
 proportion weighted summation of MEP across tracts or block groups", which is
 how Columbus's published 162 is computed. An unweighted mean of block groups
-gives 17.6%, and a population-weighted mean of per-block-group ratios
-gives 14.8%. All three are defensible statistics; only the first is MEP's, and
+gives 14.6%, and a population-weighted mean of per-block-group ratios
+gives 12.4%. All three are defensible statistics; only the first is MEP's, and
 an earlier draft led with the largest without naming which it used.
 
 The correction is not spread evenly. It falls hardest on cycling, which MEP
@@ -186,7 +186,7 @@ is what the traveller personally carries — fuel, fare, depreciation. It is a
 metric about what you can reach, priced by what you bear.
 
 **The choice is load-bearing, and pretending otherwise would be dishonest.**
-Under A, cycling supplies 79% of the headline loss. Under B, cycling retains
+Under A, cycling supplies 54.9% of the headline loss. Under B, cycling retains
 only 1.4% of its own rate and nearly all of that harm becomes driving's. Anyone
 preferring B can take the externality figure above and reassign it; no other
 part of the pipeline changes.
@@ -471,11 +471,12 @@ Population-weighted, MEP's own rule:
 
 | | city score | change |
 |---|---:|---:|
-| published | 6,908.2 | |
-| with crash harm, low | 5,790.9 | **−16.2%** |
-| with crash harm, high | 5,786.9 | **−16.2%** |
+| published | 6,682.7 | |
+| with crash harm, low | 5,789.0 | **−13.4%** |
+| with crash harm, high | 5,786.2 | **−13.4%** |
 
-Bike reach is measured on low-stress roads plus hops of 250 m or less, and walk reach on low-stress roads
+Bike reach is measured on low-stress roads plus hops of 250 m or less of
+high-stress road PER OSM WAY, not per junction-to-junction fragment, and walk reach on low-stress roads
 up to 20 minutes, the nonmotorised cap FDOT's South Florida study used
 (steps 41-43; ASSUMPTIONS section L). With bikes allowed on any road but a motorway, as standard MEP
 assumes, the published score is 7,528.4 and the drop is 23.0%; on strictly low-stress roads it is 10.9%.
@@ -484,15 +485,15 @@ Unweighted mean of block groups, for comparison only:
 
 | | mean | change |
 |---|---:|---:|
-| published | 7,522.9 | |
-| with crash harm, low | 6,200.8 | −17.6% |
-| with crash harm, high | 6,195.7 | −17.6% |
+| published | 7,258.9 | |
+| with crash harm, low | 6,198.6 | −14.6% |
+| with crash harm, high | 6,195.0 | −14.7% |
 
 Decomposed:
 
 | term | change | shipped? |
 |---|---:|---|
-| injury only | −17.6% | **yes, this is the model** |
+| injury only | −14.6% | **yes, this is the model** |
 | [deleted] delay only, 30% incident share | −5.5% | no |
 | [deleted] injury and delay, high | −29.2% | no |
 
@@ -505,9 +506,9 @@ shipped headline contains them.
 
 | mode | alone | share of drop | 40-min reach |
 |---|---:|---:|---:|
-| bike | −11.9% | **67.8%** | 4,570 |
-| drive | −5.0% | 28.2% | 108,416 |
-| walk | −0.7% | 3.9% | 55 |
+| bike | −7.3% | **54.9%** | 954 |
+| drive | −5.3% | 39.5% | 108,416 |
+| walk | −0.7% | 5.6% | 55 |
 | transit | −0.0% | 0.0% | 89 |
 
 Cycling dominates, and it is worth being precise about why. A mode's share of
@@ -547,7 +548,7 @@ The top quintile loses 5.1 percentage points more than the bottom, Spearman
 routed, the bottom two were tied at 20.4% and 20.3%; routing is what separated
 them. It is still a correlation, not a cause.
 
-Mean loss is 16.1% per block group, and 14.8% per resident. The gap between
+Mean loss is 13.4% per block group, and 12.4% per resident. The gap between
 those two is the reminder that a block group is not a person: the rural block
 groups losing most are also the emptiest.
 
@@ -756,7 +757,7 @@ toward the curve for its own road type rather than a regional average.
 
 **It barely moves the headline, and that is worth stating.** The
 population-weighted result was unchanged at −22.5% to −22.6% at the time, because driving was
-15% of the loss and the stratification only refines driving. What it buys is
+39.5% of the loss and the stratification only refines driving. What it buys is
 defensibility of the method, not a different answer.
 
 
@@ -811,7 +812,7 @@ would sit inside.
 
 ### Non-motorist risk by place: attempted, and a negative result
 
-Driving risk varies by block group. Driving is 15% of the loss. **Cycling and
+Driving risk varies by block group. Driving is 39.5% of the loss. **Cycling and
 walking are 84%, and they carried one regional number.** Closing that was the
 top item in Section 7, so it was attempted.
 
@@ -888,7 +889,7 @@ one regional number per mode. Segment-level rates exist in this project for
 2,429 FDOT roads, but attributing them to origins needs route assignment that is
 not built.
 
-**Cycling carries 67.8% of the loss, and its regional exposure rests on 35
+**Cycling carries 54.9% of the loss, and its regional exposure rests on 35
 surveyed trips.** The regional cycling estimate comes from 35 NHTS trip records. The
 national estimate, on 298 trips, is reported alongside it and the two bracket
 the range. This is the thinnest sample any headline figure depends on.
@@ -969,7 +970,7 @@ In order of how much they would move it.
 3. **A congested skim instead of free-flow speeds.** This no longer affects any
    term — the delay term that depended on it is gone — but it would shrink every
    mode's reach, and not by the same proportion. Driving loses most in absolute
-   minutes; walking loses nothing. Since cycling supplies 79% of the loss, a
+   minutes; walking loses nothing. Since cycling supplies 54.9% of the loss, a
    congested skim would most likely make the correction LARGER, not smaller.
    That is a prediction, and it is untested here.
 
