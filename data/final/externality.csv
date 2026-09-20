@@ -1,0 +1,8 @@
+metric,mode,value
+car_involved_share_K,walk,0.9902
+car_involved_share_K,bike,0.9856
+r_drive_version_a,drive,0.105924
+r_drive_version_b,drive,0.157296
+externality_per_pmt,drive,0.051373
+externality_annual_usd,drive,2875799739.0
+version_b_vs_cl_full,drive,1.5535

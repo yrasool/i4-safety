@@ -14,6 +14,13 @@
 !*.md
 !.gitignore
 
+# Aggregate RESULTS only. data/final holds mode-level and block-group
+# totals with no crash-record fields in them, at the same scale the
+# Signal Four public dashboard publishes and step 37 checks against.
+# data/raw, data/interim and data/processed stay ignored: those hold the
+# licensed records themselves and the matrices built directly from them.
+!data/final/*.csv
+
 # never commit caches
 __pycache__/
 .pytest_cache/

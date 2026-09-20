@@ -1,0 +1,3 @@
+mode,r,basis,ci_lo,ci_hi
+drive,0.05611155400541734,"fatality-only, occupants",,
+transit,0.001047667990248556,"fixed-route bus, collision-only, RY2015-2024",0.000541,0.00183

@@ -1,0 +1,30 @@
+test,case,spearman,value
+identity,scalar closed form holds,,1.0
+identity,place-varying breaks it,,1.0
+identity,residual variance share,,0.101009
+identity,as computed,0.989637,-0.140873
+identity,walk and bike x3,0.98944,-0.141624
+identity,drive x10,0.990923,-0.463108
+identity,all modes equal,1.0,-0.393469
+identity,uniform tiny,1.0,-0.004988
+external,drive vs D5AR,0.898538,
+external,transit vs D5BR,0.616126,
+attribution,drive,,0.394996
+attribution,transit,,2.9e-05
+attribution,walk,,0.055836
+attribution,bike,,0.54914
+delay,injury only,,-0.146066
+delay,shipped (lo),,-0.146066
+delay,shipped (hi),,-0.146561
+delay,[retired] delay only (hi),,-0.062169
+delay,[retired] both (hi),,-0.205195
+walk_sensitivity,r=1.16,,-0.142051
+walk_sensitivity,r=5.78,,-0.145689
+walk_sensitivity,r=11.57,,-0.146066
+walk_sensitivity,r=12.49,,-0.146075
+walk_sensitivity,r=115.66,,-0.146088
+bike_sensitivity,r=0.96,,-0.092201
+bike_sensitivity,r=4.80,,-0.138779
+bike_sensitivity,r=9.59,,-0.146066
+bike_sensitivity,r=11.79,,-0.146553
+bike_sensitivity,r=95.93,,-0.146795

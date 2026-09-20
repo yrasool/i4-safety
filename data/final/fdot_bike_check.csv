@@ -1,0 +1,10 @@
+osm,fdot,miles
+osm_none,fdot_lane,801.26
+osm_none,fdot_no_lane,6325.35
+osm_painted,fdot_lane,787.65
+osm_painted,fdot_no_lane,386.90
+osm_protected,fdot_lane,19.68
+osm_protected,fdot_no_lane,22.14
+summary,fdot_total_centreline_miles,1782.06
+summary,major_road_miles_compared,8342.97
+summary,agreed_lane_miles,807.32

@@ -1,0 +1,10 @@
+metric,year,value
+deaths_per_1000_crashes,2019,4.6833
+deaths_per_1000_crashes,2020,6.235
+deaths_per_1000_crashes,2021,6.2525
+deaths_per_1000_crashes,2022,5.5216
+deaths_per_1000_crashes,2023,5.4135
+deaths_per_1000_crashes,2024,5.3532
+deaths_per_1000_crashes,2025,4.7407
+rate_understatement,2025 held at 2024's level,0.080515
+rate_understatement,2025 grown at the 2023->2024 rate,0.120191

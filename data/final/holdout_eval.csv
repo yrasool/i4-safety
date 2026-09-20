@@ -1,0 +1,49 @@
+test,method,metric,value
+error,naive,predicted_total,6936.075
+error,naive,mae,1.574113
+error,naive,rmse,3.954886
+error,naive,mae_calibrated,1.142778
+error,naive,rmse_calibrated,2.641092
+error,naive,spearman,0.70529
+error,SPF,predicted_total,6994.17379
+error,SPF,mae,1.668345
+error,SPF,rmse,3.667531
+error,SPF,mae_calibrated,1.287447
+error,SPF,rmse_calibrated,2.800536
+error,SPF,spearman,0.69714
+error,EB,predicted_total,6936.074995
+error,EB,mae,1.519282
+error,EB,rmse,3.709392
+error,EB,mae_calibrated,1.122815
+error,EB,rmse_calibrated,2.528878
+error,EB,spearman,0.71515
+hotspot_top5,naive,site_consistency,1510.0
+hotspot_top5,naive,method_consistency,82.0
+hotspot_top5,SPF,site_consistency,1319.0
+hotspot_top5,SPF,method_consistency,128.0
+hotspot_top5,EB,site_consistency,1525.0
+hotspot_top5,EB,method_consistency,89.0
+hotspot_top10,naive,site_consistency,2404.0
+hotspot_top10,naive,method_consistency,178.0
+hotspot_top10,SPF,site_consistency,2180.0
+hotspot_top10,SPF,method_consistency,262.0
+hotspot_top10,EB,site_consistency,2426.0
+hotspot_top10,EB,method_consistency,195.0
+bootstrap,EB_vs_SPF,mae_ci_lo,0.091075
+bootstrap,EB_vs_SPF,mae_ci_hi,0.24293
+bootstrap,EB_vs_naive,mae_ci_lo,0.007373
+bootstrap,EB_vs_naive,mae_ci_hi,0.032728
+bootstrap,EB_vs_SPF,sct10_ci_lo,0.00994
+bootstrap,EB_vs_SPF,sct10_ci_hi,0.099664
+bootstrap,EB_vs_naive,sct10_ci_lo,-0.007356
+bootstrap,EB_vs_naive,sct10_ci_hi,0.016935
+bootstrap,EB_vs_SPF,sct5_ci_lo,-0.001114
+bootstrap,EB_vs_SPF,sct5_ci_hi,0.089397
+bootstrap,EB_vs_naive,sct5_ci_lo,-0.008978
+bootstrap,EB_vs_naive,sct5_ci_hi,0.015982
+verdict,EB,EB beats naive on calibrated MAE,1.0
+verdict,EB,EB beats SPF on calibrated MAE,1.0
+verdict,EB,"EB beats naive on site consistency, top 5%",1.0
+verdict,EB,"EB beats SPF on site consistency, top 5%",1.0
+verdict,EB,"EB beats naive on site consistency, top 10%",1.0
+verdict,EB,"EB beats SPF on site consistency, top 10%",1.0

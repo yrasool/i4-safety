@@ -1,0 +1,15 @@
+metric,value
+transit_crashes,1464
+transit_killed,3
+transit_serious,51
+school_crashes,1672
+school_killed,4
+school_serious,25
+other bus_crashes,3052
+other bus_killed,9
+other bus_serious,63
+transit_caused_killed,3
+transit_caused_serious,8
+transit_externality_per_pmt,0.064884
+car_externality_per_pmt,0.051373
+bus_over_car,1.263

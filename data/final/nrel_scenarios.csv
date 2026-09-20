@@ -1,0 +1,5 @@
+scenario,mean_change,passed
+fuel economy tripled,0.313518,True
+"drive travel time x0.3 (truncated, direction only)",1.737544,True
+drive cost tripled,-0.341619,True
+null scenario,0.000000,True

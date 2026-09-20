@@ -1,0 +1,7 @@
+county,population,drop_any_road,drop_realistic,drop_strict,bike_reach_kept_realistic,median_island_strict,share_island_le10_strict
+Hillsborough,1489634,0.2337,0.1595,0.1063,0.3835,2,0.6565
+Pinellas,960565,0.2374,0.1763,0.1156,0.6121,8,0.5278
+Pasco,588758,0.1730,0.1155,0.0906,0.3273,1,0.8647
+Hernando,201512,0.2743,0.2060,0.1766,0.4661,228,0.4474
+Citrus,158693,0.2817,0.1779,0.1914,0.0556,1,0.6863
+REGION,3399162,0.2301,0.1617,0.1090,0.4012,3,0.6323
